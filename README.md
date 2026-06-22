@@ -5,7 +5,7 @@ Dit project bevat een interactief en visueel overzicht van de geplande en geïmp
 ## Projectinhoud
 
 Het project bestaat uit een standalone, interactief HTML-dashboard:
-* **[arc-booking-feature-overzicht.html](arc-booking-feature-overzicht.html)**: Een interactieve pagina die alle features categoriseert per module, statistieken live berekent en filteropties biedt om snel de status van specifieke onderdelen te bekijken (zoals "Live", "Moet getest", "Bekende bugs", "In ontwikkeling", en "Nog te bouwen").
+* **[index.html](index.html)**: Een interactieve pagina die alle features categoriseert per module, statistieken live berekent en filteropties biedt om snel de status van specifieke onderdelen te bekijken (zoals "Live", "Moet getest", "Bekende bugs", "In ontwikkeling", en "Nog te bouwen").
 
 ### Gedekte Modules
 
@@ -32,8 +32,8 @@ Installeer de dependencies en start de server:
 npm install
 npm run dev
 ```
-Dit start een dev server en opent automatisch de pagina op [http://localhost:8080/arc-booking-feature-overzicht.html](http://localhost:8080/arc-booking-feature-overzicht.html).
+Dit start een dev server en opent automatisch de pagina op [http://localhost:8080](http://localhost:8080).
 
 ### 2. Direct openen
-Je kunt ook het bestand **[arc-booking-feature-overzicht.html](arc-booking-feature-overzicht.html)** direct openen in een moderne webbrowser door erop te dubbelklikken.
+Je kunt ook het bestand **[index.html](index.html)** direct openen in een moderne webbrowser door erop te dubbelklikken.
 
