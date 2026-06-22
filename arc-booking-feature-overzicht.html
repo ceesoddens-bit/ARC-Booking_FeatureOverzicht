@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARC Booking — Feature Overzicht</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f7;
+      color: #1a1a1a;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+    }
+
+    header span {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .meta {
+      text-align: right;
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .legend {
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 14px 40px;
+      display: flex;
+      gap: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .legend-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      margin-right: 4px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .badge.live      { background: #e6f9ee; color: #1a7a3c; border: 1px solid #b2e8c9; }
+    .badge.test      { background: #fff4e0; color: #8a5a00; border: 1px solid #ffd080; }
+    .badge.bug       { background: #ffeaea; color: #b30000; border: 1px solid #f5b3b3; }
+    .badge.wip       { background: #e8eeff; color: #2c45a0; border: 1px solid #b0bfff; }
+    .badge.todo      { background: #f0f0f0; color: #555; border: 1px solid #d0d0d0; }
+    .badge.critical  { background: #ffeaea; color: #b30000; border: 1px solid #f5b3b3; }
+    .badge.high      { background: #fff4e0; color: #8a5a00; border: 1px solid #ffd080; }
+    .badge.normal    { background: #f0f0f0; color: #555; border: 1px solid #d0d0d0; }
+
+    .filter-bar {
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      padding: 10px 40px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .filter-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      color: #555;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover { border-color: #999; color: #222; }
+    .filter-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+
+    .filter-label { font-size: 12px; color: #888; font-weight: 500; margin-right: 4px; }
+
+    .main {
+      padding: 32px 40px;
+      max-width: 1400px;
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e5e5e5;
+    }
+
+    .section-header h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .section-count {
+      font-size: 11px;
+      color: #888;
+      background: #f0f0f0;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .section-icon {
+      font-size: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+
+    thead th {
+      background: #f8f8fa;
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      border-bottom: 1px solid #ebebeb;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f2f2f2;
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+
+    td {
+      padding: 11px 16px;
+      vertical-align: top;
+    }
+
+    td.feature-name {
+      font-weight: 500;
+      color: #1a1a1a;
+      min-width: 200px;
+    }
+
+    td.notes {
+      color: #555;
+      font-size: 13px;
+      max-width: 400px;
+    }
+
+    td.module-col {
+      color: #888;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    td.prio-col { white-space: nowrap; }
+
+    .tag {
+      display: inline-block;
+      background: #f0f0f0;
+      color: #555;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      margin-right: 4px;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 4px;
+      flex-shrink: 0;
+    }
+
+    .dot.live    { background: #1a7a3c; }
+    .dot.test    { background: #e09000; }
+    .dot.bug     { background: #cc0000; }
+    .dot.wip     { background: #2c45a0; }
+    .dot.todo    { background: #aaa; }
+
+    .stats-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 10px;
+      padding: 18px 24px;
+      flex: 1;
+      min-width: 140px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      border-top: 3px solid transparent;
+    }
+
+    .stat-card.live-card  { border-top-color: #1a7a3c; }
+    .stat-card.test-card  { border-top-color: #e09000; }
+    .stat-card.bug-card   { border-top-color: #cc0000; }
+    .stat-card.wip-card   { border-top-color: #2c45a0; }
+    .stat-card.todo-card  { border-top-color: #aaa; }
+
+    .stat-num {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .stat-card.live-card .stat-num  { color: #1a7a3c; }
+    .stat-card.test-card .stat-num  { color: #e09000; }
+    .stat-card.bug-card .stat-num   { color: #cc0000; }
+    .stat-card.wip-card .stat-num   { color: #2c45a0; }
+    .stat-card.todo-card .stat-num  { color: #888; }
+
+    .row-hidden { display: none; }
+
+    @media print {
+      .filter-bar, .filter-btn { display: none; }
+      body { background: white; }
+      header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>ARC Booking — Feature Overzicht</h1>
+    <span>Planning en status per feature — bijgewerkt juni 2026</span>
+  </div>
+  <div class="meta">
+    Bronnen: testplan v1.0 · kennisbank · GitHub master<br>
+    Bijgewerkt: 22 juni 2026 (PR #42 verwerkt)
+  </div>
+</header>
+
+<div class="legend">
+  <span class="legend-title">Status:</span>
+  <span class="badge live">✓ Live</span>
+  <span class="badge test">⏳ Moet getest</span>
+  <span class="badge bug">✗ Bekende bug</span>
+  <span class="badge wip">⚙ In ontwikkeling</span>
+  <span class="badge todo">○ Nog te bouwen</span>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="filterRows('all', this)">Alles</button>
+  <button class="filter-btn" onclick="filterRows('live', this)">Live</button>
+  <button class="filter-btn" onclick="filterRows('test', this)">Moet getest</button>
+  <button class="filter-btn" onclick="filterRows('bug', this)">Bekende bugs</button>
+  <button class="filter-btn" onclick="filterRows('wip', this)">In ontwikkeling</button>
+  <button class="filter-btn" onclick="filterRows('todo', this)">Nog te bouwen</button>
+</div>
+
+<div class="main">
+
+  <!-- STATISTIEKEN -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card live-card">
+      <div class="stat-num" id="count-live">0</div>
+      <div class="stat-label">Live &amp; klaar</div>
+    </div>
+    <div class="stat-card test-card">
+      <div class="stat-num" id="count-test">0</div>
+      <div class="stat-label">Moet getest worden</div>
+    </div>
+    <div class="stat-card bug-card">
+      <div class="stat-num" id="count-bug">0</div>
+      <div class="stat-label">Bekende bugs</div>
+    </div>
+    <div class="stat-card wip-card">
+      <div class="stat-num" id="count-wip">0</div>
+      <div class="stat-label">In ontwikkeling</div>
+    </div>
+    <div class="stat-card todo-card">
+      <div class="stat-num" id="count-todo">0</div>
+      <div class="stat-label">Nog te bouwen</div>
+    </div>
+  </div>
+
+  <!-- MODULE 1: AUTHENTICATIE & TOEGANG -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔐</span>
+      <h2>Authenticatie &amp; Toegang</h2>
+      <span class="section-count">8 testcases</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Nieuwe eigenaar registreren</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Account aanmaken, bevestigingsmail, doorsturen naar dashboard</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Registratie met bestaand e-mailadres</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Duidelijke foutmelding: "E-mailadres al in gebruik"</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Inloggen met correcte gegevens</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Succesvolle login, doorsturen naar dashboard</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Inloggen met verkeerd wachtwoord</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Foutmelding zonder detail over welk veld fout is (veiligheid)</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Wachtwoord vergeten flow</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Reset-mail ontvangen, nieuw wachtwoord werkt, oude link ongeldig</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Uitloggen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Sessie beëindigd, terug naar loginpagina, geen cached pagina's toegankelijk</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Directe URL-toegang zonder login</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Doorsturen naar /login, originele URL onthouden voor redirect na login</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Multi-tenant isolatie</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Toegang geweigerd, geen data van ander restaurant zichtbaar</td>
+        </tr>
+        <tr data-status="wip">
+          <td class="feature-name">Team-uitnodiging accepteren</td>
+          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Route /accept-invite bestaat, teamfunctionaliteit net toegevoegd (21 jun 2026)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 2: RESTAURANTPROFIEL & INSTELLINGEN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🏪</span>
+      <h2>Restaurantprofiel &amp; Instellingen</h2>
+      <span class="section-count">6 testcases</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Restaurantprofiel aanmaken</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Profiel opgeslagen, logo zichtbaar, data correct in Firebase</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Openingstijden instellen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Tijden correct opgeslagen, gesloten dag blokkeert reserveringen</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Capaciteit per tijdslot instellen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Systeem blokkeert boekingen boven capaciteit</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Speciale sluitingsdagen invoeren</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Dag/periode toont "niet beschikbaar" in boekingswidget</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Contactgegevens wijzigen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Wijzigingen persistent na herladen</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Restaurantprofiel onvolledig opslaan</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Validatiefout per leeg verplicht veld, geen opslag</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Restaurantselector in instellingen</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Selector is te klein — UX-issue</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Branding / widget-stijl instellen</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Dynamisch brandingsysteem met eigen kleuren en logo gebouwd</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Widget-info pagina</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Insluitcode en instructies beschikbaar voor klant</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Privacy-instellingen per locatie</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Privacy-pagina per restaurantID aanwezig</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 3: RESERVERINGEN — KERN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📅</span>
+      <h2>Reserveringen — Kernfunctionaliteit</h2>
+      <span class="section-count">12 testcases · meest kritieke module</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Nieuwe reservering aanmaken (dashboard)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Reservering aangemaakt, zichtbaar in overzicht, bevestigingsmail verstuurd</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Reservering via boekingswidget (gastzijde)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Gast ontvangt bevestigingsmail, dashboard toont boeking</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Dubbelboeking voorkomen — zelfde tijdslot vol</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Tijdslot toont "niet beschikbaar", boeking geweigerd</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Dubbelboeking — gelijktijdige aanvragen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Slechts één boeking succesvol, tweede krijgt foutmelding. Geen race condition.</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Reservering wijzigen (datum/tijd)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Reservering bijgewerkt, oud slot vrij, nieuw slot bezet, mail verstuurd</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Reservering annuleren door restaurant</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Status "Geannuleerd", slot vrijgegeven, annuleringsmail naar gast</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Reservering annuleren door gast</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Via annuleringslink in bevestigingsmail, slot vrijgegeven</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Boeking buiten openingstijden blokkeren</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Datum/tijd niet selecteerbaar in widget, foutmelding bij directe API-aanroep</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Reservering met speciale wensen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Opmerking zichtbaar in dashboard voor restaurantmedewerker</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Groepsreservering (grote tafel)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Systeem controleert of capaciteit toereikend is voor groep</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Reserveringsoverzicht filteren en zoeken</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Filter op datum, naam, status — correct resultaat snel (&lt;1 sec)</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">No-show markeren</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Status bijgewerkt, slot blijft bezet (was al verstreken)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 4: BESCHIKBAARHEID & AGENDA -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🗓</span>
+      <h2>Beschikbaarheid &amp; Agenda</h2>
+      <span class="section-count">6 testcases</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Beschikbare tijdslots tonen in widget</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Alleen tijdslots binnen openingstijden zichtbaar, volle slots grijs</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Real-time update na boeking</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Browser A toont slot als bezet zonder handmatig herladen</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Agenda-overzicht dag/week/maand</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Kalender en tijdlijn gebouwd, inclusief splitscreen-weergave</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Beschikbaarheid na annulering</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Vrijgekomen slot toont weer als beschikbaar</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Buffer tussen reserveringen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Bufferslot geblokkeerd als buffer actief is</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Maximale boekingstermijn</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Data buiten termijn niet selecteerbaar in widget</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Kleurlegenda op tijdlijn en plattegrond</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Legenda ontbreekt — gebruikers weten niet wat paars, groen, zwart betekent</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 5: E-MAIL NOTIFICATIES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📧</span>
+      <h2>E-mail Notificaties</h2>
+      <span class="section-count">8 testcases · bekende blocker</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Bevestigingsmail na nieuwe reservering (gast)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Mail ontvangen binnen 30 sec, correcte datum/tijd/naam, geldige annuleringslink</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Bevestigingsmail naar restaurant</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Restaurant ontvangt notificatie met gastgegevens</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Herinneringsmail (24 uur van tevoren)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Herinnering verstuurd met correcte gegevens en annuleringsoptie</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Annuleringsmail na annulering</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Annuleringsbevestiging ontvangen met correcte details</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Wijzigingsmail na aanpassing</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Mail toont nieuwe én oude datum/tijd</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Mail bij ongeldig e-mailadres</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Validatiefout vóór opslag, geen crash of stille fout</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Mail niet in spam (SPF/DKIM)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Mail arriveert in inbox bij Gmail, Outlook en iCloud — SPF/DKIM correct geconfigureerd</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Annuleringslink werkt eenmalig</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Eerste klik annuleert, tweede klik geeft "al geannuleerd" melding</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 6: STRIPE & ABONNEMENTEN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">💳</span>
+      <h2>Stripe &amp; Abonnementen</h2>
+      <span class="section-count">8 testcases</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Gratis proefperiode starten</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Trial actief, alle features toegankelijk, einddatum zichtbaar</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Betaald abonnement afsluiten</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Betaling geslaagd, abonnement actief in Stripe en Firebase, features ontgrendeld</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Webhook: payment_intent.succeeded</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Firebase bijgewerkt naar "actief" abonnement binnen 5 sec</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Webhook: invoice.payment_failed</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Restaurant krijgt waarschuwing, toegang niet direct geblokkeerd (grace period)</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Abonnement opzeggen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Opzegging gepland voor einde periode, bevestigingsmail</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Verlopen abonnement — toegangsbeperking</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Blokkering met upgrade-prompt, bestaande data nog zichtbaar</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Betaling met geweigerde kaart</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Duidelijke foutmelding, geen abonnement aangemaakt</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Factuurgeschiedenis inzien</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Alle facturen zichtbaar met downloadlink als PDF</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 7: BOEKINGSWIDGET -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔌</span>
+      <h2>Boekingswidget (Embeddable)</h2>
+      <span class="section-count">7 testcases</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Widget laden op externe website</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Widget laadt correct in Chrome, Firefox en Safari — geen console errors</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Widget op mobiel (iOS Safari)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Volledig functioneel op mobiel, geen layout-problemen</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Widget op mobiel (Android Chrome)</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Volledig functioneel, toetsenbord pushed layout niet kapot</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Widget met restaurant-branding</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Widget toont correcte kleur en logo indien ingesteld</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Widget bij geen beschikbaarheid</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">"Geen beschikbaarheid" melding, suggestie voor andere dag</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Widget blokkeert bij verlopen abonnement</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Widget toont vriendelijke melding of is verborgen, geen crash</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Widget laadsnelheid</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Bruikbaar binnen 3 seconden op trage verbinding (3G throttling)</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Widget preview in dashboard</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Route /widget-preview aanwezig in codebase</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Widget iframe-integratie</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Gemerged 22 jun (PR #42) — widget kan nu ook via iframe ingebed worden op externe sites</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Widget aanpasbare UI (uitgebreid)</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Gemerged 22 jun (PR #42) — uitgebreider customization systeem voor widget-stijl en UI</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 8: GASTENBEHEER & CRM -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">👤</span>
+      <h2>Gastenbeheer &amp; CRM</h2>
+      <span class="section-count">5 testcases</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Gastprofiel automatisch aanmaken</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Nieuw gastprofiel aangemaakt met naam, e-mail, datum eerste bezoek</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Bestaande gast herkend bij nieuwe boeking</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Nieuwe reservering gekoppeld aan bestaand profiel, bezoekteller +1</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Notitie toevoegen aan gast</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Notitie opgeslagen, zichtbaar bij volgende reservering van die gast</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Reserveringshistorie per gast</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Alle eerdere reserveringen chronologisch zichtbaar</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Gasten zoeken en filteren</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Zoeken op naam, e-mail, filter op "meest bezocht" — correct &amp; snel</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Gastenbeheer sectie in dashboard</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Route /dashboard/guests aanwezig in codebase</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 9: BEVEILIGING -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🛡</span>
+      <h2>Beveiliging</h2>
+      <span class="section-count">8 testcases · bekende blocker voor launch</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Firebase Security Rules — lees-isolatie</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Toegang geweigerd, 403 error — data van ander restaurant niet leesbaar</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Firebase Security Rules — schrijf-isolatie</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Schrijftoegang geweigerd naar ander restaurant-ID</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Stripe webhook signature verificatie</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Nep-webhook geweigerd (400/401), geen verwerking</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Rate limiting op boekingsformulier</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Rate limiting actief na x pogingen, foutmelding zonder crash</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Input validatie — XSS in naamveld</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Script wordt niet uitgevoerd, tekst wordt gesanitized weergegeven</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Annuleringslinks niet raadbaar</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Token is cryptografisch sterk (UUID v4 of JWT), niet te brute-forcen</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">HTTPS afdwingen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Automatische redirect naar HTTPS</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Sessiebeheer na wachtwoordwijziging</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Andere sessies ongeldig gemaakt na wachtwoordwijziging</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 10: PERFORMANCE -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <h2>Performance &amp; Betrouwbaarheid</h2>
+      <span class="section-count">6 testcases</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="test">
+          <td class="feature-name">Dashboard laadtijd</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Dashboard laadt onder 2 seconden, ook met 100+ reserveringen</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Gedrag bij Firebase-verbindingsfout</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Vriendelijke foutmelding, geen crash, herstel bij herverbinding</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Gedrag bij Stripe-uitval</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Duidelijke foutmelding, geen kapotte state in Firebase</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Gelijktijdige gebruikers</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">10 gelijktijdige reserveringen op zelfde restaurant — geen dubbele boekingen, data-integriteit OK</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Grote hoeveelheid reserveringen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">500+ reserveringen laden — paginering werkt, pagina niet traag</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Browser-refresh tijdens boeking</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Geen gedeeltelijke/corrupte reservering aangemaakt</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 11: PLATTEGROND & TAFELS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🗺</span>
+      <h2>Plattegrond &amp; Tafels</h2>
+      <span class="section-count">gebouwd · meerdere bekende bugs</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="live">
+          <td class="feature-name">Tafelindeling met plattegrond</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Visueel beheerpaneel voor tafels aanwezig in dashboard</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Tafels aanmaken en bewerken</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Instellingen plattegrond en tafels aanwezig</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Plattegrond verspringt bij sidebar</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Bij openen/sluiten reserveringspaneel verandert sidebar de contentbreedte — plattegrond verspringt</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Tafelposities bij afwijkende aspect ratio</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Plattegrondafbeelding met afwijkende aspect ratio schaalt tafels verkeerd — tafels op verkeerde positie</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Gekoppelde tafels — "Aan tafel" verwijdert tweede tafel</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Bug bij table combining: "Aan tafel" actie verwijdert de tweede gekoppelde tafel</td>
+        </tr>
+        <tr data-status="wip">
+          <td class="feature-name">Smart Seating (automatische tafelkoppeling)</td>
+          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">BOUWPLAN_SMART_SEATING.md aanwezig — automatisch tafels combineren op basis van groepsgrootte</td>
+        </tr>
+        <tr data-status="wip">
+          <td class="feature-name">Tafelcombinaties (handmatig)</td>
+          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">BOUWPLAN_TABLE_COMBINING.md aanwezig</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 12: GROEPEN & ZALEN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🏛</span>
+      <h2>Groepen &amp; Zalen (module)</h2>
+      <span class="section-count">gedeeltelijk live · in ontwikkeling</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="live">
+          <td class="feature-name">Zaalinstellingen (capaciteit, prijs, foto, BTW)</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Configuratie per zaal aanwezig</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Producten en arrangementen per zaal</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Configureerbaar per zaal</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Evenementenwidget voor op de website</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Widget filtert zalen op capaciteit</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Offertegenerator met eigen huisstijl</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Inclusief logo, restaurantfoto en BTW-berekening</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Klant accordeert/wijst af per mail</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Automatische bevestigingsmail + accordeer/afwijs-flow</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Factuur aanmaken na akkoord</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Aanbetaling of deelfacturen mogelijk</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Klantberichten via eigen dashboard</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Klant kan berichten sturen via eigen portaal</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Omzetoverzicht exporteren als CSV</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Export aanwezig</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Mollie/Stripe betaallink koppelen</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Mollie testaccount bij Amber, Revie koppelt. BOUWPLAN_PAYMENTS_V1.md aanwezig.</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Koppeling centraal overzicht-dashboard</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Groepsboekingen zijn nu los van het centrale reserveringsoverzicht</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">"Keuken informeren"-knop</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Werkblad met gerechten + aantallen voor medewerkers, vanuit goedgekeurde boeking</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Taakaanmaak vanuit goedgekeurde groepsboeking</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Automatisch taken aanmaken voor team na akkoord klant</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Maximum gasten instelling reguliere reserveringen</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Boven bijv. 10 personen automatisch doorverwijzen naar groepen-widget</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Groepen Simple Mode — onboarding keuzescherm (Sprint GS-1)</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Nieuw BOUWPLAN_GROUPS_SIMPLE.md (22 jun). Keuzescherm bij eerste activering: "Zalen &amp; arrangementen" vs "Aanvragen op maat". Schrijft groupsMode naar Firestore. Bestaande klanten krijgen automatisch "spaces".</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Groepen Simple Mode — widget aanvraagflow (Sprint GS-2)</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Vereenvoudigde widget: gast vult eventtype, datum, gasten en vrije wensen in. Geen zaal- of arrangementkeuze. Bevestigingsmail gast + notificatie restaurant. Geschikt voor restaurants die het hele pand verhuren (bijv. Applaus-type).</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Groepen Simple Mode — dashboard aanpassingen (Sprint GS-3)</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">In simple mode: tabs Zalen, Producten, Arrangementen en Planning verbergen. Lege offerte-editor met "Regel toevoegen". Kolom "Zaal" in boekingenoverzicht verbergen. Offerte/factuur-flow zelf blijft identiek aan spaces-modus.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 13: CADEAUBONNEN -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🎁</span>
+      <h2>Cadeaubonnen (module)</h2>
+      <span class="section-count">in ontwikkeling · bugfix branch actief</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="wip">
+          <td class="feature-name">Cadeaubon aanmaken en versturen</td>
+          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Cees werkt aan bugfix-branch (cadeaubonnen-bugfixes). Nog niet klaar voor merge.</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Ingewisselde bon blijft op "Actief"</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Status wordt na inwisseling niet bijgewerkt naar "Gebruikt"</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Gedeeltelijke inwisseling</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Geen ondersteuning voor bijv. €50 van €100 gebruiken — moet gebouwd worden</td>
+        </tr>
+        <tr data-status="bug">
+          <td class="feature-name">Cadeaubon zichtbaar in reserveringsoverzicht</td>
+          <td><span class="badge bug">✗ Bekende bug</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">In het reserveringsoverzicht is niet zichtbaar dat er met cadeaubon betaald is</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 14: ONBOARDING -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🚀</span>
+      <h2>Onboarding</h2>
+      <span class="section-count">gedeeltelijk live</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="live">
+          <td class="feature-name">Multi-stap onboarding wizard</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Route /onboarding aanwezig, wizard voor bedrijf en locatie</td>
+        </tr>
+        <tr data-status="test">
+          <td class="feature-name">Onboarding flow volledig doorlopen</td>
+          <td><span class="badge test">⏳ Moet getest</span></td>
+          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
+          <td class="notes">Nieuwe klant moet in max. 1 uur live kunnen gaan — einde-tot-einde testen</td>
+        </tr>
+        <tr data-status="live">
+          <td class="feature-name">Widget-installatiegids (standalone)</td>
+          <td><span class="badge live">✓ Live</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Instructies voor klant om widget zelf te plaatsen</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Team uitnodigen tijdens onboarding</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Teamfunctionaliteit net toegevoegd (21 jun 2026), integratie in onboarding nog open</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 15: TEAM -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">👥</span>
+      <h2>Teambeheer</h2>
+      <span class="section-count">net toegevoegd</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="wip">
+          <td class="feature-name">Teamleden toevoegen en uitnodigen</td>
+          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">BOUWPLAN_TEAM.md aanwezig, code gecommit op 21 jun 2026</td>
+        </tr>
+        <tr data-status="wip">
+          <td class="feature-name">Uitnodiging accepteren via e-mail</td>
+          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
+          <td class="prio-col"><span class="badge high">Hoog</span></td>
+          <td class="notes">Route /accept-invite aanwezig</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Rolbeheer (eigenaar vs medewerker)</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Rolgebaseerde toegangsrechten per teamlid</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODULE 16: ARRANGEMENTEN (GEPLAND) -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🍽</span>
+      <h2>Arrangementen (module)</h2>
+      <span class="section-count">gepland</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Status</th>
+          <th>Prio</th>
+          <th>Notities</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-status="todo">
+          <td class="feature-name">Arrangementen aanmaken per restaurant</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">BOUWPLAN_ARRANGEMENTS.md aanwezig. Module nog volledig te bouwen.</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Arrangement koppelen aan reservering</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Gast kiest arrangement tijdens het boeken</td>
+        </tr>
+        <tr data-status="todo">
+          <td class="feature-name">Arrangementoverzicht in dashboard</td>
+          <td><span class="badge todo">○ Nog te bouwen</span></td>
+          <td class="prio-col"><span class="badge normal">Normaal</span></td>
+          <td class="notes">Inzicht voor restaurant welke arrangementen geboekt zijn</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  function filterRows(status, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const rows = document.querySelectorAll('tbody tr[data-status]');
+    rows.forEach(row => {
+      if (status === 'all' || row.dataset.status === status) {
+        row.classList.remove('row-hidden');
+      } else {
+        row.classList.add('row-hidden');
+      }
+    });
+
+    // Hide empty table sections
+    document.querySelectorAll('.section').forEach(section => {
+      const visibleRows = section.querySelectorAll('tbody tr:not(.row-hidden)');
+      section.style.display = visibleRows.length === 0 ? 'none' : '';
+    });
+
+    updateCounts();
+  }
+
+  function updateCounts() {
+    const counts = { live: 0, test: 0, bug: 0, wip: 0, todo: 0 };
+    document.querySelectorAll('tbody tr[data-status]').forEach(row => {
+      counts[row.dataset.status]++;
+    });
+    document.getElementById('count-live').textContent = counts.live;
+    document.getElementById('count-test').textContent = counts.test;
+    document.getElementById('count-bug').textContent = counts.bug;
+    document.getElementById('count-wip').textContent = counts.wip;
+    document.getElementById('count-todo').textContent = counts.todo;
+  }
+
+  // Init counts on load
+  updateCounts();
+</script>
+
+</body>
+</html>
