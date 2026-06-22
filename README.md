@@ -17,8 +17,23 @@ Het project bestaat uit een standalone, interactief HTML-dashboard:
 6. **💳 Stripe & Abonnementen** — Gratis proefperiode, betaalde abonnementen, Stripe webhooks, opzeggingen.
 7. **🔌 Boekingswidget** — Embeddable widget voor restaurants.
 
+## Functionaliteiten
+
+* **Interactieve Filters**: Bekijk de status van specifieke onderdelen (zoals "Live", "Moet getest", "Bekende bugs", "In ontwikkeling", en "Nog te bouwen").
+* **Tijdschatting (Uren)**: Vul voor elke feature de geschatte ontwikkeltijd (in uren) in.
+* **Totale Ontwikkeltijd**: De totale geschatte tijd wordt automatisch live bijgehouden en getoond in een statistiek-kaart bovenaan.
+* **LocalStorage persistence**: De ingevulde uren worden automatisch opgeslagen in je browser (`localStorage`), zodat ze behouden blijven bij het herladen van de pagina.
+
 ## Hoe te gebruiken
 
-1. Open het bestand **[arc-booking-feature-overzicht.html](arc-booking-feature-overzicht.html)** direct in een moderne webbrowser (Chrome, Safari, Firefox, Edge).
-2. Gebruik de filterknoppen bovenaan de pagina om de weergave te filteren op status.
-3. Bekijk de statuskaarten bovenaan voor een directe samenvatting van de voortgang van het project.
+### 1. Lokaal openen via Dev Server (Aanbevolen)
+Installeer de dependencies en start de server:
+```bash
+npm install
+npm run dev
+```
+Dit start een dev server en opent automatisch de pagina op [http://localhost:8080/arc-booking-feature-overzicht.html](http://localhost:8080/arc-booking-feature-overzicht.html).
+
+### 2. Direct openen
+Je kunt ook het bestand **[arc-booking-feature-overzicht.html](arc-booking-feature-overzicht.html)** direct openen in een moderne webbrowser door erop te dubbelklikken.
+
