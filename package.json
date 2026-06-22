@@ -1,0 +1,12 @@
+{
+  "name": "arc-booking-feature-overzicht",
+  "version": "1.0.0",
+  "description": "Interactive Feature Overview Dashboard for ARC Booking",
+  "main": "arc-booking-feature-overzicht.html",
+  "scripts": {
+    "dev": "http-server -o /arc-booking-feature-overzicht.html"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
