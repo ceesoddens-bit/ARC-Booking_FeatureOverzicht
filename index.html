@@ -1567,7 +1567,23 @@
 
 </div>
 
-<script>
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+  import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB-o7UztLFmB60OQvsvI03MJ5pewQnx8dk",
+    authDomain: "arcbooking-featurelijst.firebaseapp.com",
+    projectId: "arcbooking-featurelijst",
+    storageBucket: "arcbooking-featurelijst.firebasestorage.app",
+    messagingSenderId: "993330924352",
+    appId: "1:993330924352:web:b68c98a3ab6a7a19ac48a5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const estimatesDocRef = doc(db, "dashboard", "estimates");
+
   function filterRows(status, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -1602,11 +1618,13 @@
     document.getElementById('count-todo').textContent = counts.todo;
   }
 
-  function saveTime(input) {
+  async function saveTime(input) {
     const row = input.closest('tr');
     const nameEl = row.querySelector('.feature-name');
     if (!nameEl) return;
     const name = nameEl.textContent.trim();
+    
+    // Save locally immediately
     const saved = JSON.parse(localStorage.getItem('feature-times') || '{}');
     if (input.value) {
       saved[name] = parseFloat(input.value);
@@ -1615,20 +1633,45 @@
     }
     localStorage.setItem('feature-times', JSON.stringify(saved));
     updateTotalTime();
+
+    // Sync to Firestore
+    try {
+      await setDoc(estimatesDocRef, saved);
+      console.log('Successfully saved to Firestore');
+    } catch (e) {
+      console.error('Error saving to Firestore:', e);
+    }
   }
 
-  function loadTimes() {
-    const saved = JSON.parse(localStorage.getItem('feature-times') || '{}');
+  function applyTimesToInputs(saved) {
     document.querySelectorAll('tbody tr').forEach(row => {
       const nameEl = row.querySelector('.feature-name');
       if (!nameEl) return;
       const name = nameEl.textContent.trim();
       const input = row.querySelector('.time-input');
-      if (input && saved[name] !== undefined) {
-        input.value = saved[name];
+      if (input) {
+        input.value = saved[name] !== undefined ? saved[name] : '';
       }
     });
     updateTotalTime();
+  }
+
+  async function loadTimes() {
+    // 1. Load from localStorage first for snappy load
+    const localSaved = JSON.parse(localStorage.getItem('feature-times') || '{}');
+    applyTimesToInputs(localSaved);
+
+    // 2. Fetch from Firestore to sync latest cloud data
+    try {
+      const docSnap = await getDoc(estimatesDocRef);
+      if (docSnap.exists()) {
+        const cloudSaved = docSnap.data();
+        localStorage.setItem('feature-times', JSON.stringify(cloudSaved));
+        applyTimesToInputs(cloudSaved);
+      }
+    } catch (e) {
+      console.error('Error loading from Firestore:', e);
+    }
   }
 
   function updateTotalTime() {
@@ -1642,7 +1685,14 @@
     document.getElementById('total-time').textContent = total + 'u';
   }
 
-  // Init counts on load
+  // Bind to window for inline HTML onclick/oninput events
+  window.filterRows = filterRows;
+  window.updateCounts = updateCounts;
+  window.saveTime = saveTime;
+  window.loadTimes = loadTimes;
+  window.updateTotalTime = updateTotalTime;
+
+  // Init
   updateCounts();
   loadTimes();
 </script>
