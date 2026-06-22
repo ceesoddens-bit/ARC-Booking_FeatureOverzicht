@@ -82,6 +82,37 @@
     .badge.high      { background: #fff4e0; color: #8a5a00; border: 1px solid #ffd080; }
     .badge.normal    { background: #f0f0f0; color: #555; border: 1px solid #d0d0d0; }
 
+    select.badge {
+      appearance: none;
+      -webkit-appearance: none;
+      border: 1px solid currentColor;
+      padding: 3px 20px 3px 10px;
+      background-image: url("data:image/svg+xml;utf8,<svg fill='currentColor' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 4px center;
+      background-size: 12px;
+      cursor: pointer;
+      outline: none;
+      font-family: inherit;
+    }
+
+    [contenteditable="true"] {
+      border: 1px dashed transparent;
+      border-radius: 4px;
+      padding: 4px;
+      outline: none;
+      transition: all 0.15s;
+    }
+    [contenteditable="true"]:hover {
+      border-color: #ccc;
+      background: #fafafa;
+    }
+    [contenteditable="true"]:focus {
+      border-color: #1a1a2e;
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(26, 26, 46, 0.05);
+    }
+
     .filter-bar {
       background: white;
       border-bottom: 1px solid #e5e5e5;
@@ -297,10 +328,60 @@
       color: #6366f1;
     }
 
+    .delete-btn {
+      opacity: 0;
+      background: none;
+      border: none;
+      color: #ff3b30;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+      transition: opacity 0.15s, transform 0.15s;
+    }
+    tbody tr:hover .delete-btn {
+      opacity: 1;
+    }
+    .delete-btn:hover {
+      transform: scale(1.2);
+    }
+    .action-col {
+      width: 40px;
+      text-align: center;
+      vertical-align: middle !important;
+    }
+
+    .add-row-placeholder {
+      background: #fafafa;
+    }
+    .add-feature-btn {
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .add-feature-btn:hover {
+      background: #2c2c4d;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .add-feature-btn:active {
+      transform: translateY(0);
+    }
+
     @media print {
-      .filter-bar, .filter-btn { display: none; }
+      .filter-bar, .filter-btn, .delete-btn, .add-feature-btn, .time-input { display: none; }
       body { background: white; }
       header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      [contenteditable="true"] { border: none; background: transparent; padding: 0; }
     }
   </style>
 </head>
@@ -366,1204 +447,8 @@
     </div>
   </div>
 
-  <!-- MODULE 1: AUTHENTICATIE & TOEGANG -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🔐</span>
-      <h2>Authenticatie &amp; Toegang</h2>
-      <span class="section-count">8 testcases</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Nieuwe eigenaar registreren</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Account aanmaken, bevestigingsmail, doorsturen naar dashboard</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Registratie met bestaand e-mailadres</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Duidelijke foutmelding: "E-mailadres al in gebruik"</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Inloggen met correcte gegevens</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Succesvolle login, doorsturen naar dashboard</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Inloggen met verkeerd wachtwoord</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Foutmelding zonder detail over welk veld fout is (veiligheid)</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Wachtwoord vergeten flow</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Reset-mail ontvangen, nieuw wachtwoord werkt, oude link ongeldig</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Uitloggen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Sessie beëindigd, terug naar loginpagina, geen cached pagina's toegankelijk</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Directe URL-toegang zonder login</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Doorsturen naar /login, originele URL onthouden voor redirect na login</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Multi-tenant isolatie</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Toegang geweigerd, geen data van ander restaurant zichtbaar</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="wip">
-          <td class="feature-name">Team-uitnodiging accepteren</td>
-          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Route /accept-invite bestaat, teamfunctionaliteit net toegevoegd (21 jun 2026)</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 2: RESTAURANTPROFIEL & INSTELLINGEN -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🏪</span>
-      <h2>Restaurantprofiel &amp; Instellingen</h2>
-      <span class="section-count">6 testcases</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Restaurantprofiel aanmaken</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Profiel opgeslagen, logo zichtbaar, data correct in Firebase</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Openingstijden instellen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Tijden correct opgeslagen, gesloten dag blokkeert reserveringen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Capaciteit per tijdslot instellen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Systeem blokkeert boekingen boven capaciteit</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Speciale sluitingsdagen invoeren</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Dag/periode toont "niet beschikbaar" in boekingswidget</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Contactgegevens wijzigen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Wijzigingen persistent na herladen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Restaurantprofiel onvolledig opslaan</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Validatiefout per leeg verplicht veld, geen opslag</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Restaurantselector in instellingen</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Selector is te klein — UX-issue</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Branding / widget-stijl instellen</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Dynamisch brandingsysteem met eigen kleuren en logo gebouwd</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Widget-info pagina</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Insluitcode en instructies beschikbaar voor klant</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Privacy-instellingen per locatie</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Privacy-pagina per restaurantID aanwezig</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 3: RESERVERINGEN — KERN -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">📅</span>
-      <h2>Reserveringen — Kernfunctionaliteit</h2>
-      <span class="section-count">12 testcases · meest kritieke module</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Nieuwe reservering aanmaken (dashboard)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Reservering aangemaakt, zichtbaar in overzicht, bevestigingsmail verstuurd</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Reservering via boekingswidget (gastzijde)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Gast ontvangt bevestigingsmail, dashboard toont boeking</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Dubbelboeking voorkomen — zelfde tijdslot vol</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Tijdslot toont "niet beschikbaar", boeking geweigerd</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Dubbelboeking — gelijktijdige aanvragen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Slechts één boeking succesvol, tweede krijgt foutmelding. Geen race condition.</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Reservering wijzigen (datum/tijd)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Reservering bijgewerkt, oud slot vrij, nieuw slot bezet, mail verstuurd</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Reservering annuleren door restaurant</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Status "Geannuleerd", slot vrijgegeven, annuleringsmail naar gast</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Reservering annuleren door gast</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Via annuleringslink in bevestigingsmail, slot vrijgegeven</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Boeking buiten openingstijden blokkeren</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Datum/tijd niet selecteerbaar in widget, foutmelding bij directe API-aanroep</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Reservering met speciale wensen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Opmerking zichtbaar in dashboard voor restaurantmedewerker</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Groepsreservering (grote tafel)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Systeem controleert of capaciteit toereikend is voor groep</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Reserveringsoverzicht filteren en zoeken</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Filter op datum, naam, status — correct resultaat snel (&lt;1 sec)</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">No-show markeren</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Status bijgewerkt, slot blijft bezet (was al verstreken)</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 4: BESCHIKBAARHEID & AGENDA -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🗓</span>
-      <h2>Beschikbaarheid &amp; Agenda</h2>
-      <span class="section-count">6 testcases</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Beschikbare tijdslots tonen in widget</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Alleen tijdslots binnen openingstijden zichtbaar, volle slots grijs</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Real-time update na boeking</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Browser A toont slot als bezet zonder handmatig herladen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Agenda-overzicht dag/week/maand</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Kalender en tijdlijn gebouwd, inclusief splitscreen-weergave</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Beschikbaarheid na annulering</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Vrijgekomen slot toont weer als beschikbaar</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Buffer tussen reserveringen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Bufferslot geblokkeerd als buffer actief is</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Maximale boekingstermijn</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Data buiten termijn niet selecteerbaar in widget</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Kleurlegenda op tijdlijn en plattegrond</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Legenda ontbreekt — gebruikers weten niet wat paars, groen, zwart betekent</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 5: E-MAIL NOTIFICATIES -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">📧</span>
-      <h2>E-mail Notificaties</h2>
-      <span class="section-count">8 testcases · bekende blocker</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Bevestigingsmail na nieuwe reservering (gast)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Mail ontvangen binnen 30 sec, correcte datum/tijd/naam, geldige annuleringslink</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Bevestigingsmail naar restaurant</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Restaurant ontvangt notificatie met gastgegevens</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Herinneringsmail (24 uur van tevoren)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Herinnering verstuurd met correcte gegevens en annuleringsoptie</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Annuleringsmail na annulering</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Annuleringsbevestiging ontvangen met correcte details</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Wijzigingsmail na aanpassing</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Mail toont nieuwe én oude datum/tijd</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Mail bij ongeldig e-mailadres</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Validatiefout vóór opslag, geen crash of stille fout</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Mail niet in spam (SPF/DKIM)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Mail arriveert in inbox bij Gmail, Outlook en iCloud — SPF/DKIM correct geconfigureerd</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Annuleringslink werkt eenmalig</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Eerste klik annuleert, tweede klik geeft "al geannuleerd" melding</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 6: STRIPE & ABONNEMENTEN -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">💳</span>
-      <h2>Stripe &amp; Abonnementen</h2>
-      <span class="section-count">8 testcases</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Gratis proefperiode starten</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Trial actief, alle features toegankelijk, einddatum zichtbaar</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Betaald abonnement afsluiten</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Betaling geslaagd, abonnement actief in Stripe en Firebase, features ontgrendeld</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Webhook: payment_intent.succeeded</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Firebase bijgewerkt naar "actief" abonnement binnen 5 sec</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Webhook: invoice.payment_failed</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Restaurant krijgt waarschuwing, toegang niet direct geblokkeerd (grace period)</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Abonnement opzeggen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Opzegging gepland voor einde periode, bevestigingsmail</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Verlopen abonnement — toegangsbeperking</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Blokkering met upgrade-prompt, bestaande data nog zichtbaar</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Betaling met geweigerde kaart</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Duidelijke foutmelding, geen abonnement aangemaakt</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Factuurgeschiedenis inzien</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Alle facturen zichtbaar met downloadlink als PDF</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 7: BOEKINGSWIDGET -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🔌</span>
-      <h2>Boekingswidget (Embeddable)</h2>
-      <span class="section-count">7 testcases</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Widget laden op externe website</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Widget laadt correct in Chrome, Firefox en Safari — geen console errors</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Widget op mobiel (iOS Safari)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Volledig functioneel op mobiel, geen layout-problemen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Widget op mobiel (Android Chrome)</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Volledig functioneel, toetsenbord pushed layout niet kapot</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Widget met restaurant-branding</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Widget toont correcte kleur en logo indien ingesteld</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Widget bij geen beschikbaarheid</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">"Geen beschikbaarheid" melding, suggestie voor andere dag</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Widget blokkeert bij verlopen abonnement</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Widget toont vriendelijke melding of is verborgen, geen crash</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Widget laadsnelheid</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Bruikbaar binnen 3 seconden op trage verbinding (3G throttling)</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Widget preview in dashboard</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Route /widget-preview aanwezig in codebase</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Widget iframe-integratie</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Gemerged 22 jun (PR #42) — widget kan nu ook via iframe ingebed worden op externe sites</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Widget aanpasbare UI (uitgebreid)</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Gemerged 22 jun (PR #42) — uitgebreider customization systeem voor widget-stijl en UI</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 8: GASTENBEHEER & CRM -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">👤</span>
-      <h2>Gastenbeheer &amp; CRM</h2>
-      <span class="section-count">5 testcases</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Gastprofiel automatisch aanmaken</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Nieuw gastprofiel aangemaakt met naam, e-mail, datum eerste bezoek</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Bestaande gast herkend bij nieuwe boeking</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Nieuwe reservering gekoppeld aan bestaand profiel, bezoekteller +1</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Notitie toevoegen aan gast</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Notitie opgeslagen, zichtbaar bij volgende reservering van die gast</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Reserveringshistorie per gast</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Alle eerdere reserveringen chronologisch zichtbaar</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Gasten zoeken en filteren</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Zoeken op naam, e-mail, filter op "meest bezocht" — correct &amp; snel</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Gastenbeheer sectie in dashboard</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Route /dashboard/guests aanwezig in codebase</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 9: BEVEILIGING -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🛡</span>
-      <h2>Beveiliging</h2>
-      <span class="section-count">8 testcases · bekende blocker voor launch</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Firebase Security Rules — lees-isolatie</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Toegang geweigerd, 403 error — data van ander restaurant niet leesbaar</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Firebase Security Rules — schrijf-isolatie</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Schrijftoegang geweigerd naar ander restaurant-ID</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Stripe webhook signature verificatie</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Nep-webhook geweigerd (400/401), geen verwerking</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Rate limiting op boekingsformulier</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Rate limiting actief na x pogingen, foutmelding zonder crash</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Input validatie — XSS in naamveld</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Script wordt niet uitgevoerd, tekst wordt gesanitized weergegeven</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Annuleringslinks niet raadbaar</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Token is cryptografisch sterk (UUID v4 of JWT), niet te brute-forcen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">HTTPS afdwingen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Automatische redirect naar HTTPS</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Sessiebeheer na wachtwoordwijziging</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Andere sessies ongeldig gemaakt na wachtwoordwijziging</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 10: PERFORMANCE -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">⚡</span>
-      <h2>Performance &amp; Betrouwbaarheid</h2>
-      <span class="section-count">6 testcases</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="test">
-          <td class="feature-name">Dashboard laadtijd</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Dashboard laadt onder 2 seconden, ook met 100+ reserveringen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Gedrag bij Firebase-verbindingsfout</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Vriendelijke foutmelding, geen crash, herstel bij herverbinding</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Gedrag bij Stripe-uitval</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Duidelijke foutmelding, geen kapotte state in Firebase</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Gelijktijdige gebruikers</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">10 gelijktijdige reserveringen op zelfde restaurant — geen dubbele boekingen, data-integriteit OK</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Grote hoeveelheid reserveringen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">500+ reserveringen laden — paginering werkt, pagina niet traag</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Browser-refresh tijdens boeking</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Geen gedeeltelijke/corrupte reservering aangemaakt</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 11: PLATTEGROND & TAFELS -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🗺</span>
-      <h2>Plattegrond &amp; Tafels</h2>
-      <span class="section-count">gebouwd · meerdere bekende bugs</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="live">
-          <td class="feature-name">Tafelindeling met plattegrond</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Visueel beheerpaneel voor tafels aanwezig in dashboard</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Tafels aanmaken en bewerken</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Instellingen plattegrond en tafels aanwezig</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Plattegrond verspringt bij sidebar</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Bij openen/sluiten reserveringspaneel verandert sidebar de contentbreedte — plattegrond verspringt</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Tafelposities bij afwijkende aspect ratio</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Plattegrondafbeelding met afwijkende aspect ratio schaalt tafels verkeerd — tafels op verkeerde positie</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Gekoppelde tafels — "Aan tafel" verwijdert tweede tafel</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Bug bij table combining: "Aan tafel" actie verwijdert de tweede gekoppelde tafel</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="wip">
-          <td class="feature-name">Smart Seating (automatische tafelkoppeling)</td>
-          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">BOUWPLAN_SMART_SEATING.md aanwezig — automatisch tafels combineren op basis van groepsgrootte</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="wip">
-          <td class="feature-name">Tafelcombinaties (handmatig)</td>
-          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">BOUWPLAN_TABLE_COMBINING.md aanwezig</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 12: GROEPEN & ZALEN -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🏛</span>
-      <h2>Groepen &amp; Zalen (module)</h2>
-      <span class="section-count">gedeeltelijk live · in ontwikkeling</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="live">
-          <td class="feature-name">Zaalinstellingen (capaciteit, prijs, foto, BTW)</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Configuratie per zaal aanwezig</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Producten en arrangementen per zaal</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Configureerbaar per zaal</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Evenementenwidget voor op de website</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Widget filtert zalen op capaciteit</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Offertegenerator met eigen huisstijl</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Inclusief logo, restaurantfoto en BTW-berekening</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Klant accordeert/wijst af per mail</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Automatische bevestigingsmail + accordeer/afwijs-flow</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Factuur aanmaken na akkoord</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Aanbetaling of deelfacturen mogelijk</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Klantberichten via eigen dashboard</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Klant kan berichten sturen via eigen portaal</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Omzetoverzicht exporteren als CSV</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Export aanwezig</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Mollie/Stripe betaallink koppelen</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Mollie testaccount bij Amber, Revie koppelt. BOUWPLAN_PAYMENTS_V1.md aanwezig.</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Koppeling centraal overzicht-dashboard</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Groepsboekingen zijn nu los van het centrale reserveringsoverzicht</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">"Keuken informeren"-knop</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Werkblad met gerechten + aantallen voor medewerkers, vanuit goedgekeurde boeking</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Taakaanmaak vanuit goedgekeurde groepsboeking</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Automatisch taken aanmaken voor team na akkoord klant</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Maximum gasten instelling reguliere reserveringen</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Boven bijv. 10 personen automatisch doorverwijzen naar groepen-widget</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Groepen Simple Mode — onboarding keuzescherm (Sprint GS-1)</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Nieuw BOUWPLAN_GROUPS_SIMPLE.md (22 jun). Keuzescherm bij eerste activering: "Zalen &amp; arrangementen" vs "Aanvragen op maat". Schrijft groupsMode naar Firestore. Bestaande klanten krijgen automatisch "spaces".</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Groepen Simple Mode — widget aanvraagflow (Sprint GS-2)</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Vereenvoudigde widget: gast vult eventtype, datum, gasten en vrije wensen in. Geen zaal- of arrangementkeuze. Bevestigingsmail gast + notificatie restaurant. Geschikt voor restaurants die het hele pand verhuren (bijv. Applaus-type).</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Groepen Simple Mode — dashboard aanpassingen (Sprint GS-3)</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">In simple mode: tabs Zalen, Producten, Arrangementen en Planning verbergen. Lege offerte-editor met "Regel toevoegen". Kolom "Zaal" in boekingenoverzicht verbergen. Offerte/factuur-flow zelf blijft identiek aan spaces-modus.</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 13: CADEAUBONNEN -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🎁</span>
-      <h2>Cadeaubonnen (module)</h2>
-      <span class="section-count">in ontwikkeling · bugfix branch actief</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="wip">
-          <td class="feature-name">Cadeaubon aanmaken en versturen</td>
-          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Cees werkt aan bugfix-branch (cadeaubonnen-bugfixes). Nog niet klaar voor merge.</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Ingewisselde bon blijft op "Actief"</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Status wordt na inwisseling niet bijgewerkt naar "Gebruikt"</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Gedeeltelijke inwisseling</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Geen ondersteuning voor bijv. €50 van €100 gebruiken — moet gebouwd worden</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="bug">
-          <td class="feature-name">Cadeaubon zichtbaar in reserveringsoverzicht</td>
-          <td><span class="badge bug">✗ Bekende bug</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">In het reserveringsoverzicht is niet zichtbaar dat er met cadeaubon betaald is</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 14: ONBOARDING -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🚀</span>
-      <h2>Onboarding</h2>
-      <span class="section-count">gedeeltelijk live</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="live">
-          <td class="feature-name">Multi-stap onboarding wizard</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Route /onboarding aanwezig, wizard voor bedrijf en locatie</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="test">
-          <td class="feature-name">Onboarding flow volledig doorlopen</td>
-          <td><span class="badge test">⏳ Moet getest</span></td>
-          <td class="prio-col"><span class="badge critical">Kritiek</span></td>
-          <td class="notes">Nieuwe klant moet in max. 1 uur live kunnen gaan — einde-tot-einde testen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="live">
-          <td class="feature-name">Widget-installatiegids (standalone)</td>
-          <td><span class="badge live">✓ Live</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Instructies voor klant om widget zelf te plaatsen</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Team uitnodigen tijdens onboarding</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Teamfunctionaliteit net toegevoegd (21 jun 2026), integratie in onboarding nog open</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 15: TEAM -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">👥</span>
-      <h2>Teambeheer</h2>
-      <span class="section-count">net toegevoegd</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="wip">
-          <td class="feature-name">Teamleden toevoegen en uitnodigen</td>
-          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">BOUWPLAN_TEAM.md aanwezig, code gecommit op 21 jun 2026</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="wip">
-          <td class="feature-name">Uitnodiging accepteren via e-mail</td>
-          <td><span class="badge wip">⚙ In ontwikkeling</span></td>
-          <td class="prio-col"><span class="badge high">Hoog</span></td>
-          <td class="notes">Route /accept-invite aanwezig</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Rolbeheer (eigenaar vs medewerker)</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Rolgebaseerde toegangsrechten per teamlid</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MODULE 16: ARRANGEMENTEN (GEPLAND) -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-icon">🍽</span>
-      <h2>Arrangementen (module)</h2>
-      <span class="section-count">gepland</span>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Feature</th>
-          <th>Status</th>
-          <th>Prio</th>
-          <th>Notities</th>
-          <th style="width: 100px; text-align: right;">Tijd (uur)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-status="todo">
-          <td class="feature-name">Arrangementen aanmaken per restaurant</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">BOUWPLAN_ARRANGEMENTS.md aanwezig. Module nog volledig te bouwen.</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Arrangement koppelen aan reservering</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Gast kiest arrangement tijdens het boeken</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-        <tr data-status="todo">
-          <td class="feature-name">Arrangementoverzicht in dashboard</td>
-          <td><span class="badge todo">○ Nog te bouwen</span></td>
-          <td class="prio-col"><span class="badge normal">Normaal</span></td>
-          <td class="notes">Inzicht voor restaurant welke arrangementen geboekt zijn</td>
-          <td class="time-col"><input type="number" class="time-input" min="0" step="0.5" placeholder="-" oninput="saveTime(this)"></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <!-- MODULES CONTAINER -->
+  <div id="modules-container"></div>
 
 </div>
 
@@ -1582,99 +467,1133 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const estimatesDocRef = doc(db, "dashboard", "estimates");
+  const dataDocRef = doc(db, "dashboard", "data");
 
-  function filterRows(status, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const rows = document.querySelectorAll('tbody tr[data-status]');
-    rows.forEach(row => {
-      if (status === 'all' || row.dataset.status === status) {
-        row.classList.remove('row-hidden');
-      } else {
-        row.classList.add('row-hidden');
+  const SEED_DATA = [
+  {
+    "id": "m1",
+    "title": "Authenticatie & Toegang",
+    "icon": "🔐",
+    "features": [
+      {
+        "id": "f1",
+        "name": "Nieuwe eigenaar registreren",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Account aanmaken, bevestigingsmail, doorsturen naar dashboard",
+        "time": ""
+      },
+      {
+        "id": "f2",
+        "name": "Registratie met bestaand e-mailadres",
+        "status": "test",
+        "priority": "high",
+        "notes": "Duidelijke foutmelding: \"E-mailadres al in gebruik\"",
+        "time": ""
+      },
+      {
+        "id": "f3",
+        "name": "Inloggen met correcte gegevens",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Succesvolle login, doorsturen naar dashboard",
+        "time": ""
+      },
+      {
+        "id": "f4",
+        "name": "Inloggen met verkeerd wachtwoord",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Foutmelding zonder detail over welk veld fout is (veiligheid)",
+        "time": ""
+      },
+      {
+        "id": "f5",
+        "name": "Wachtwoord vergeten flow",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Reset-mail ontvangen, nieuw wachtwoord werkt, oude link ongeldig",
+        "time": ""
+      },
+      {
+        "id": "f6",
+        "name": "Uitloggen",
+        "status": "test",
+        "priority": "high",
+        "notes": "Sessie beëindigd, terug naar loginpagina, geen cached pagina's toegankelijk",
+        "time": ""
+      },
+      {
+        "id": "f7",
+        "name": "Directe URL-toegang zonder login",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Doorsturen naar /login, originele URL onthouden voor redirect na login",
+        "time": ""
+      },
+      {
+        "id": "f8",
+        "name": "Multi-tenant isolatie",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Toegang geweigerd, geen data van ander restaurant zichtbaar",
+        "time": ""
+      },
+      {
+        "id": "f9",
+        "name": "Team-uitnodiging accepteren",
+        "status": "wip",
+        "priority": "high",
+        "notes": "Route /accept-invite bestaat, teamfunctionaliteit net toegevoegd (21 jun 2026)",
+        "time": ""
       }
-    });
+    ]
+  },
+  {
+    "id": "m2",
+    "title": "Restaurantprofiel & Instellingen",
+    "icon": "🏪",
+    "features": [
+      {
+        "id": "f10",
+        "name": "Restaurantprofiel aanmaken",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Profiel opgeslagen, logo zichtbaar, data correct in Firebase",
+        "time": ""
+      },
+      {
+        "id": "f11",
+        "name": "Openingstijden instellen",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Tijden correct opgeslagen, gesloten dag blokkeert reserveringen",
+        "time": ""
+      },
+      {
+        "id": "f12",
+        "name": "Capaciteit per tijdslot instellen",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Systeem blokkeert boekingen boven capaciteit",
+        "time": ""
+      },
+      {
+        "id": "f13",
+        "name": "Speciale sluitingsdagen invoeren",
+        "status": "test",
+        "priority": "high",
+        "notes": "Dag/periode toont \"niet beschikbaar\" in boekingswidget",
+        "time": ""
+      },
+      {
+        "id": "f14",
+        "name": "Contactgegevens wijzigen",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Wijzigingen persistent na herladen",
+        "time": ""
+      },
+      {
+        "id": "f15",
+        "name": "Restaurantprofiel onvolledig opslaan",
+        "status": "test",
+        "priority": "high",
+        "notes": "Validatiefout per leeg verplicht veld, geen opslag",
+        "time": ""
+      },
+      {
+        "id": "f16",
+        "name": "Restaurantselector in instellingen",
+        "status": "bug",
+        "priority": "normal",
+        "notes": "Selector is te klein — UX-issue",
+        "time": ""
+      },
+      {
+        "id": "f17",
+        "name": "Branding / widget-stijl instellen",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Dynamisch brandingsysteem met eigen kleuren en logo gebouwd",
+        "time": ""
+      },
+      {
+        "id": "f18",
+        "name": "Widget-info pagina",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Insluitcode en instructies beschikbaar voor klant",
+        "time": ""
+      },
+      {
+        "id": "f19",
+        "name": "Privacy-instellingen per locatie",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Privacy-pagina per restaurantID aanwezig",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m3",
+    "title": "Reserveringen — Kernfunctionaliteit",
+    "icon": "📅",
+    "features": [
+      {
+        "id": "f20",
+        "name": "Nieuwe reservering aanmaken (dashboard)",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Reservering aangemaakt, zichtbaar in overzicht, bevestigingsmail verstuurd",
+        "time": ""
+      },
+      {
+        "id": "f21",
+        "name": "Reservering via boekingswidget (gastzijde)",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Gast ontvangt bevestigingsmail, dashboard toont boeking",
+        "time": ""
+      },
+      {
+        "id": "f22",
+        "name": "Dubbelboeking voorkomen — zelfde tijdslot vol",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Tijdslot toont \"niet beschikbaar\", boeking geweigerd",
+        "time": ""
+      },
+      {
+        "id": "f23",
+        "name": "Dubbelboeking — gelijktijdige aanvragen",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Slechts één boeking succesvol, tweede krijgt foutmelding. Geen race condition.",
+        "time": ""
+      },
+      {
+        "id": "f24",
+        "name": "Reservering wijzigen (datum/tijd)",
+        "status": "test",
+        "priority": "high",
+        "notes": "Reservering bijgewerkt, oud slot vrij, nieuw slot bezet, mail verstuurd",
+        "time": ""
+      },
+      {
+        "id": "f25",
+        "name": "Reservering annuleren door restaurant",
+        "status": "test",
+        "priority": "high",
+        "notes": "Status \"Geannuleerd\", slot vrijgegeven, annuleringsmail naar gast",
+        "time": ""
+      },
+      {
+        "id": "f26",
+        "name": "Reservering annuleren door gast",
+        "status": "test",
+        "priority": "high",
+        "notes": "Via annuleringslink in bevestigingsmail, slot vrijgegeven",
+        "time": ""
+      },
+      {
+        "id": "f27",
+        "name": "Boeking buiten openingstijden blokkeren",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Datum/tijd niet selecteerbaar in widget, foutmelding bij directe API-aanroep",
+        "time": ""
+      },
+      {
+        "id": "f28",
+        "name": "Reservering met speciale wensen",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Opmerking zichtbaar in dashboard voor restaurantmedewerker",
+        "time": ""
+      },
+      {
+        "id": "f29",
+        "name": "Groepsreservering (grote tafel)",
+        "status": "test",
+        "priority": "high",
+        "notes": "Systeem controleert of capaciteit toereikend is voor groep",
+        "time": ""
+      },
+      {
+        "id": "f30",
+        "name": "Reserveringsoverzicht filteren en zoeken",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Filter op datum, naam, status — correct resultaat snel (&lt;1 sec)",
+        "time": ""
+      },
+      {
+        "id": "f31",
+        "name": "No-show markeren",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Status bijgewerkt, slot blijft bezet (was al verstreken)",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m4",
+    "title": "Beschikbaarheid & Agenda",
+    "icon": "🗓",
+    "features": [
+      {
+        "id": "f32",
+        "name": "Beschikbare tijdslots tonen in widget",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Alleen tijdslots binnen openingstijden zichtbaar, volle slots grijs",
+        "time": ""
+      },
+      {
+        "id": "f33",
+        "name": "Real-time update na boeking",
+        "status": "test",
+        "priority": "high",
+        "notes": "Browser A toont slot als bezet zonder handmatig herladen",
+        "time": ""
+      },
+      {
+        "id": "f34",
+        "name": "Agenda-overzicht dag/week/maand",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Kalender en tijdlijn gebouwd, inclusief splitscreen-weergave",
+        "time": ""
+      },
+      {
+        "id": "f35",
+        "name": "Beschikbaarheid na annulering",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Vrijgekomen slot toont weer als beschikbaar",
+        "time": ""
+      },
+      {
+        "id": "f36",
+        "name": "Buffer tussen reserveringen",
+        "status": "test",
+        "priority": "high",
+        "notes": "Bufferslot geblokkeerd als buffer actief is",
+        "time": ""
+      },
+      {
+        "id": "f37",
+        "name": "Maximale boekingstermijn",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Data buiten termijn niet selecteerbaar in widget",
+        "time": ""
+      },
+      {
+        "id": "f38",
+        "name": "Kleurlegenda op tijdlijn en plattegrond",
+        "status": "bug",
+        "priority": "high",
+        "notes": "Legenda ontbreekt — gebruikers weten niet wat paars, groen, zwart betekent",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m5",
+    "title": "E-mail Notificaties",
+    "icon": "📧",
+    "features": [
+      {
+        "id": "f39",
+        "name": "Bevestigingsmail na nieuwe reservering (gast)",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Mail ontvangen binnen 30 sec, correcte datum/tijd/naam, geldige annuleringslink",
+        "time": ""
+      },
+      {
+        "id": "f40",
+        "name": "Bevestigingsmail naar restaurant",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Restaurant ontvangt notificatie met gastgegevens",
+        "time": ""
+      },
+      {
+        "id": "f41",
+        "name": "Herinneringsmail (24 uur van tevoren)",
+        "status": "test",
+        "priority": "high",
+        "notes": "Herinnering verstuurd met correcte gegevens en annuleringsoptie",
+        "time": ""
+      },
+      {
+        "id": "f42",
+        "name": "Annuleringsmail na annulering",
+        "status": "test",
+        "priority": "high",
+        "notes": "Annuleringsbevestiging ontvangen met correcte details",
+        "time": ""
+      },
+      {
+        "id": "f43",
+        "name": "Wijzigingsmail na aanpassing",
+        "status": "test",
+        "priority": "high",
+        "notes": "Mail toont nieuwe én oude datum/tijd",
+        "time": ""
+      },
+      {
+        "id": "f44",
+        "name": "Mail bij ongeldig e-mailadres",
+        "status": "test",
+        "priority": "high",
+        "notes": "Validatiefout vóór opslag, geen crash of stille fout",
+        "time": ""
+      },
+      {
+        "id": "f45",
+        "name": "Mail niet in spam (SPF/DKIM)",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Mail arriveert in inbox bij Gmail, Outlook en iCloud — SPF/DKIM correct geconfigureerd",
+        "time": ""
+      },
+      {
+        "id": "f46",
+        "name": "Annuleringslink werkt eenmalig",
+        "status": "test",
+        "priority": "high",
+        "notes": "Eerste klik annuleert, tweede klik geeft \"al geannuleerd\" melding",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m6",
+    "title": "Stripe & Abonnementen",
+    "icon": "💳",
+    "features": [
+      {
+        "id": "f47",
+        "name": "Gratis proefperiode starten",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Trial actief, alle features toegankelijk, einddatum zichtbaar",
+        "time": ""
+      },
+      {
+        "id": "f48",
+        "name": "Betaald abonnement afsluiten",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Betaling geslaagd, abonnement actief in Stripe en Firebase, features ontgrendeld",
+        "time": ""
+      },
+      {
+        "id": "f49",
+        "name": "Webhook: payment_intent.succeeded",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Firebase bijgewerkt naar \"actief\" abonnement binnen 5 sec",
+        "time": ""
+      },
+      {
+        "id": "f50",
+        "name": "Webhook: invoice.payment_failed",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Restaurant krijgt waarschuwing, toegang niet direct geblokkeerd (grace period)",
+        "time": ""
+      },
+      {
+        "id": "f51",
+        "name": "Abonnement opzeggen",
+        "status": "test",
+        "priority": "high",
+        "notes": "Opzegging gepland voor einde periode, bevestigingsmail",
+        "time": ""
+      },
+      {
+        "id": "f52",
+        "name": "Verlopen abonnement — toegangsbeperking",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Blokkering met upgrade-prompt, bestaande data nog zichtbaar",
+        "time": ""
+      },
+      {
+        "id": "f53",
+        "name": "Betaling met geweigerde kaart",
+        "status": "test",
+        "priority": "high",
+        "notes": "Duidelijke foutmelding, geen abonnement aangemaakt",
+        "time": ""
+      },
+      {
+        "id": "f54",
+        "name": "Factuurgeschiedenis inzien",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Alle facturen zichtbaar met downloadlink als PDF",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m7",
+    "title": "Boekingswidget (Embeddable)",
+    "icon": "🔌",
+    "features": [
+      {
+        "id": "f55",
+        "name": "Widget laden op externe website",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Widget laadt correct in Chrome, Firefox en Safari — geen console errors",
+        "time": ""
+      },
+      {
+        "id": "f56",
+        "name": "Widget op mobiel (iOS Safari)",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Volledig functioneel op mobiel, geen layout-problemen",
+        "time": ""
+      },
+      {
+        "id": "f57",
+        "name": "Widget op mobiel (Android Chrome)",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Volledig functioneel, toetsenbord pushed layout niet kapot",
+        "time": ""
+      },
+      {
+        "id": "f58",
+        "name": "Widget met restaurant-branding",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Widget toont correcte kleur en logo indien ingesteld",
+        "time": ""
+      },
+      {
+        "id": "f59",
+        "name": "Widget bij geen beschikbaarheid",
+        "status": "test",
+        "priority": "high",
+        "notes": "\"Geen beschikbaarheid\" melding, suggestie voor andere dag",
+        "time": ""
+      },
+      {
+        "id": "f60",
+        "name": "Widget blokkeert bij verlopen abonnement",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Widget toont vriendelijke melding of is verborgen, geen crash",
+        "time": ""
+      },
+      {
+        "id": "f61",
+        "name": "Widget laadsnelheid",
+        "status": "test",
+        "priority": "high",
+        "notes": "Bruikbaar binnen 3 seconden op trage verbinding (3G throttling)",
+        "time": ""
+      },
+      {
+        "id": "f62",
+        "name": "Widget preview in dashboard",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Route /widget-preview aanwezig in codebase",
+        "time": ""
+      },
+      {
+        "id": "f63",
+        "name": "Widget iframe-integratie",
+        "status": "live",
+        "priority": "high",
+        "notes": "Gemerged 22 jun (PR #42) — widget kan nu ook via iframe ingebed worden op externe sites",
+        "time": ""
+      },
+      {
+        "id": "f64",
+        "name": "Widget aanpasbare UI (uitgebreid)",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Gemerged 22 jun (PR #42) — uitgebreider customization systeem voor widget-stijl en UI",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m8",
+    "title": "Gastenbeheer & CRM",
+    "icon": "👤",
+    "features": [
+      {
+        "id": "f65",
+        "name": "Gastprofiel automatisch aanmaken",
+        "status": "test",
+        "priority": "high",
+        "notes": "Nieuw gastprofiel aangemaakt met naam, e-mail, datum eerste bezoek",
+        "time": ""
+      },
+      {
+        "id": "f66",
+        "name": "Bestaande gast herkend bij nieuwe boeking",
+        "status": "test",
+        "priority": "high",
+        "notes": "Nieuwe reservering gekoppeld aan bestaand profiel, bezoekteller +1",
+        "time": ""
+      },
+      {
+        "id": "f67",
+        "name": "Notitie toevoegen aan gast",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Notitie opgeslagen, zichtbaar bij volgende reservering van die gast",
+        "time": ""
+      },
+      {
+        "id": "f68",
+        "name": "Reserveringshistorie per gast",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Alle eerdere reserveringen chronologisch zichtbaar",
+        "time": ""
+      },
+      {
+        "id": "f69",
+        "name": "Gasten zoeken en filteren",
+        "status": "test",
+        "priority": "normal",
+        "notes": "Zoeken op naam, e-mail, filter op \"meest bezocht\" — correct &amp; snel",
+        "time": ""
+      },
+      {
+        "id": "f70",
+        "name": "Gastenbeheer sectie in dashboard",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Route /dashboard/guests aanwezig in codebase",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m9",
+    "title": "Beveiliging",
+    "icon": "🛡",
+    "features": [
+      {
+        "id": "f71",
+        "name": "Firebase Security Rules — lees-isolatie",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Toegang geweigerd, 403 error — data van ander restaurant niet leesbaar",
+        "time": ""
+      },
+      {
+        "id": "f72",
+        "name": "Firebase Security Rules — schrijf-isolatie",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Schrijftoegang geweigerd naar ander restaurant-ID",
+        "time": ""
+      },
+      {
+        "id": "f73",
+        "name": "Stripe webhook signature verificatie",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Nep-webhook geweigerd (400/401), geen verwerking",
+        "time": ""
+      },
+      {
+        "id": "f74",
+        "name": "Rate limiting op boekingsformulier",
+        "status": "test",
+        "priority": "high",
+        "notes": "Rate limiting actief na x pogingen, foutmelding zonder crash",
+        "time": ""
+      },
+      {
+        "id": "f75",
+        "name": "Input validatie — XSS in naamveld",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Script wordt niet uitgevoerd, tekst wordt gesanitized weergegeven",
+        "time": ""
+      },
+      {
+        "id": "f76",
+        "name": "Annuleringslinks niet raadbaar",
+        "status": "test",
+        "priority": "high",
+        "notes": "Token is cryptografisch sterk (UUID v4 of JWT), niet te brute-forcen",
+        "time": ""
+      },
+      {
+        "id": "f77",
+        "name": "HTTPS afdwingen",
+        "status": "test",
+        "priority": "high",
+        "notes": "Automatische redirect naar HTTPS",
+        "time": ""
+      },
+      {
+        "id": "f78",
+        "name": "Sessiebeheer na wachtwoordwijziging",
+        "status": "test",
+        "priority": "high",
+        "notes": "Andere sessies ongeldig gemaakt na wachtwoordwijziging",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m10",
+    "title": "Performance & Betrouwbaarheid",
+    "icon": "⚡",
+    "features": [
+      {
+        "id": "f79",
+        "name": "Dashboard laadtijd",
+        "status": "test",
+        "priority": "high",
+        "notes": "Dashboard laadt onder 2 seconden, ook met 100+ reserveringen",
+        "time": ""
+      },
+      {
+        "id": "f80",
+        "name": "Gedrag bij Firebase-verbindingsfout",
+        "status": "test",
+        "priority": "high",
+        "notes": "Vriendelijke foutmelding, geen crash, herstel bij herverbinding",
+        "time": ""
+      },
+      {
+        "id": "f81",
+        "name": "Gedrag bij Stripe-uitval",
+        "status": "test",
+        "priority": "high",
+        "notes": "Duidelijke foutmelding, geen kapotte state in Firebase",
+        "time": ""
+      },
+      {
+        "id": "f82",
+        "name": "Gelijktijdige gebruikers",
+        "status": "test",
+        "priority": "critical",
+        "notes": "10 gelijktijdige reserveringen op zelfde restaurant — geen dubbele boekingen, data-integriteit OK",
+        "time": ""
+      },
+      {
+        "id": "f83",
+        "name": "Grote hoeveelheid reserveringen",
+        "status": "test",
+        "priority": "normal",
+        "notes": "500+ reserveringen laden — paginering werkt, pagina niet traag",
+        "time": ""
+      },
+      {
+        "id": "f84",
+        "name": "Browser-refresh tijdens boeking",
+        "status": "test",
+        "priority": "high",
+        "notes": "Geen gedeeltelijke/corrupte reservering aangemaakt",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m11",
+    "title": "Plattegrond & Tafels",
+    "icon": "🗺",
+    "features": [
+      {
+        "id": "f85",
+        "name": "Tafelindeling met plattegrond",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Visueel beheerpaneel voor tafels aanwezig in dashboard",
+        "time": ""
+      },
+      {
+        "id": "f86",
+        "name": "Tafels aanmaken en bewerken",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Instellingen plattegrond en tafels aanwezig",
+        "time": ""
+      },
+      {
+        "id": "f87",
+        "name": "Plattegrond verspringt bij sidebar",
+        "status": "bug",
+        "priority": "high",
+        "notes": "Bij openen/sluiten reserveringspaneel verandert sidebar de contentbreedte — plattegrond verspringt",
+        "time": ""
+      },
+      {
+        "id": "f88",
+        "name": "Tafelposities bij afwijkende aspect ratio",
+        "status": "bug",
+        "priority": "high",
+        "notes": "Plattegrondafbeelding met afwijkende aspect ratio schaalt tafels verkeerd — tafels op verkeerde positie",
+        "time": ""
+      },
+      {
+        "id": "f89",
+        "name": "Gekoppelde tafels — \"Aan tafel\" verwijdert tweede tafel",
+        "status": "bug",
+        "priority": "high",
+        "notes": "Bug bij table combining: \"Aan tafel\" actie verwijdert de tweede gekoppelde tafel",
+        "time": ""
+      },
+      {
+        "id": "f90",
+        "name": "Smart Seating (automatische tafelkoppeling)",
+        "status": "wip",
+        "priority": "normal",
+        "notes": "BOUWPLAN_SMART_SEATING.md aanwezig — automatisch tafels combineren op basis van groepsgrootte",
+        "time": ""
+      },
+      {
+        "id": "f91",
+        "name": "Tafelcombinaties (handmatig)",
+        "status": "wip",
+        "priority": "normal",
+        "notes": "BOUWPLAN_TABLE_COMBINING.md aanwezig",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m12",
+    "title": "Groepen & Zalen (module)",
+    "icon": "🏛",
+    "features": [
+      {
+        "id": "f92",
+        "name": "Zaalinstellingen (capaciteit, prijs, foto, BTW)",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Configuratie per zaal aanwezig",
+        "time": ""
+      },
+      {
+        "id": "f93",
+        "name": "Producten en arrangementen per zaal",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Configureerbaar per zaal",
+        "time": ""
+      },
+      {
+        "id": "f94",
+        "name": "Evenementenwidget voor op de website",
+        "status": "live",
+        "priority": "high",
+        "notes": "Widget filtert zalen op capaciteit",
+        "time": ""
+      },
+      {
+        "id": "f95",
+        "name": "Offertegenerator met eigen huisstijl",
+        "status": "live",
+        "priority": "high",
+        "notes": "Inclusief logo, restaurantfoto en BTW-berekening",
+        "time": ""
+      },
+      {
+        "id": "f96",
+        "name": "Klant accordeert/wijst af per mail",
+        "status": "live",
+        "priority": "high",
+        "notes": "Automatische bevestigingsmail + accordeer/afwijs-flow",
+        "time": ""
+      },
+      {
+        "id": "f97",
+        "name": "Factuur aanmaken na akkoord",
+        "status": "live",
+        "priority": "high",
+        "notes": "Aanbetaling of deelfacturen mogelijk",
+        "time": ""
+      },
+      {
+        "id": "f98",
+        "name": "Klantberichten via eigen dashboard",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Klant kan berichten sturen via eigen portaal",
+        "time": ""
+      },
+      {
+        "id": "f99",
+        "name": "Omzetoverzicht exporteren als CSV",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Export aanwezig",
+        "time": ""
+      },
+      {
+        "id": "f100",
+        "name": "Mollie/Stripe betaallink koppelen",
+        "status": "todo",
+        "priority": "high",
+        "notes": "Mollie testaccount bij Amber, Revie koppelt. BOUWPLAN_PAYMENTS_V1.md aanwezig.",
+        "time": ""
+      },
+      {
+        "id": "f101",
+        "name": "Koppeling centraal overzicht-dashboard",
+        "status": "todo",
+        "priority": "high",
+        "notes": "Groepsboekingen zijn nu los van het centrale reserveringsoverzicht",
+        "time": ""
+      },
+      {
+        "id": "f102",
+        "name": "\"Keuken informeren\"-knop",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "Werkblad met gerechten + aantallen voor medewerkers, vanuit goedgekeurde boeking",
+        "time": ""
+      },
+      {
+        "id": "f103",
+        "name": "Taakaanmaak vanuit goedgekeurde groepsboeking",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "Automatisch taken aanmaken voor team na akkoord klant",
+        "time": ""
+      },
+      {
+        "id": "f104",
+        "name": "Maximum gasten instelling reguliere reserveringen",
+        "status": "todo",
+        "priority": "high",
+        "notes": "Boven bijv. 10 personen automatisch doorverwijzen naar groepen-widget",
+        "time": ""
+      },
+      {
+        "id": "f105",
+        "name": "Groepen Simple Mode — onboarding keuzescherm (Sprint GS-1)",
+        "status": "todo",
+        "priority": "high",
+        "notes": "Nieuw BOUWPLAN_GROUPS_SIMPLE.md (22 jun). Keuzescherm bij eerste activering: \"Zalen &amp; arrangementen\" vs \"Aanvragen op maat\". Schrijft groupsMode naar Firestore. Bestaande klanten krijgen automatisch \"spaces\".",
+        "time": ""
+      },
+      {
+        "id": "f106",
+        "name": "Groepen Simple Mode — widget aanvraagflow (Sprint GS-2)",
+        "status": "todo",
+        "priority": "high",
+        "notes": "Vereenvoudigde widget: gast vult eventtype, datum, gasten en vrije wensen in. Geen zaal- of arrangementkeuze. Bevestigingsmail gast + notificatie restaurant. Geschikt voor restaurants die het hele pand verhuren (bijv. Applaus-type).",
+        "time": ""
+      },
+      {
+        "id": "f107",
+        "name": "Groepen Simple Mode — dashboard aanpassingen (Sprint GS-3)",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "In simple mode: tabs Zalen, Producten, Arrangementen en Planning verbergen. Lege offerte-editor met \"Regel toevoegen\". Kolom \"Zaal\" in boekingenoverzicht verbergen. Offerte/factuur-flow zelf blijft identiek aan spaces-modus.",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m13",
+    "title": "Cadeaubonnen (module)",
+    "icon": "🎁",
+    "features": [
+      {
+        "id": "f108",
+        "name": "Cadeaubon aanmaken en versturen",
+        "status": "wip",
+        "priority": "normal",
+        "notes": "Cees werkt aan bugfix-branch (cadeaubonnen-bugfixes). Nog niet klaar voor merge.",
+        "time": ""
+      },
+      {
+        "id": "f109",
+        "name": "Ingewisselde bon blijft op \"Actief\"",
+        "status": "bug",
+        "priority": "high",
+        "notes": "Status wordt na inwisseling niet bijgewerkt naar \"Gebruikt\"",
+        "time": ""
+      },
+      {
+        "id": "f110",
+        "name": "Gedeeltelijke inwisseling",
+        "status": "bug",
+        "priority": "high",
+        "notes": "Geen ondersteuning voor bijv. €50 van €100 gebruiken — moet gebouwd worden",
+        "time": ""
+      },
+      {
+        "id": "f111",
+        "name": "Cadeaubon zichtbaar in reserveringsoverzicht",
+        "status": "bug",
+        "priority": "normal",
+        "notes": "In het reserveringsoverzicht is niet zichtbaar dat er met cadeaubon betaald is",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m14",
+    "title": "Onboarding",
+    "icon": "🚀",
+    "features": [
+      {
+        "id": "f112",
+        "name": "Multi-stap onboarding wizard",
+        "status": "live",
+        "priority": "high",
+        "notes": "Route /onboarding aanwezig, wizard voor bedrijf en locatie",
+        "time": ""
+      },
+      {
+        "id": "f113",
+        "name": "Onboarding flow volledig doorlopen",
+        "status": "test",
+        "priority": "critical",
+        "notes": "Nieuwe klant moet in max. 1 uur live kunnen gaan — einde-tot-einde testen",
+        "time": ""
+      },
+      {
+        "id": "f114",
+        "name": "Widget-installatiegids (standalone)",
+        "status": "live",
+        "priority": "normal",
+        "notes": "Instructies voor klant om widget zelf te plaatsen",
+        "time": ""
+      },
+      {
+        "id": "f115",
+        "name": "Team uitnodigen tijdens onboarding",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "Teamfunctionaliteit net toegevoegd (21 jun 2026), integratie in onboarding nog open",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m15",
+    "title": "Teambeheer",
+    "icon": "👥",
+    "features": [
+      {
+        "id": "f116",
+        "name": "Teamleden toevoegen en uitnodigen",
+        "status": "wip",
+        "priority": "high",
+        "notes": "BOUWPLAN_TEAM.md aanwezig, code gecommit op 21 jun 2026",
+        "time": ""
+      },
+      {
+        "id": "f117",
+        "name": "Uitnodiging accepteren via e-mail",
+        "status": "wip",
+        "priority": "high",
+        "notes": "Route /accept-invite aanwezig",
+        "time": ""
+      },
+      {
+        "id": "f118",
+        "name": "Rolbeheer (eigenaar vs medewerker)",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "Rolgebaseerde toegangsrechten per teamlid",
+        "time": ""
+      }
+    ]
+  },
+  {
+    "id": "m16",
+    "title": "Arrangementen (module)",
+    "icon": "🍽",
+    "features": [
+      {
+        "id": "f119",
+        "name": "Arrangementen aanmaken per restaurant",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "BOUWPLAN_ARRANGEMENTS.md aanwezig. Module nog volledig te bouwen.",
+        "time": ""
+      },
+      {
+        "id": "f120",
+        "name": "Arrangement koppelen aan reservering",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "Gast kiest arrangement tijdens het boeken",
+        "time": ""
+      },
+      {
+        "id": "f121",
+        "name": "Arrangementoverzicht in dashboard",
+        "status": "todo",
+        "priority": "normal",
+        "notes": "Inzicht voor restaurant welke arrangementen geboekt zijn",
+        "time": ""
+      }
+    ]
+  }
+];
 
-    // Hide empty table sections
-    document.querySelectorAll('.section').forEach(section => {
-      const visibleRows = section.querySelectorAll('tbody tr:not(.row-hidden)');
-      section.style.display = visibleRows.length === 0 ? 'none' : '';
-    });
+  let state = { modules: [] };
 
-    updateCounts();
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
-  function updateCounts() {
+  window.handleEnterKey = function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.target.blur(); // Trigger save on blur
+    }
+  };
+
+  window.filterRows = function(status, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderDashboard();
+  };
+
+  window.updateCounts = function() {
     const counts = { live: 0, test: 0, bug: 0, wip: 0, todo: 0 };
-    document.querySelectorAll('tbody tr[data-status]').forEach(row => {
-      counts[row.dataset.status]++;
+    state.modules.forEach(module => {
+      module.features.forEach(f => {
+        if (counts[f.status] !== undefined) {
+          counts[f.status]++;
+        }
+      });
     });
     document.getElementById('count-live').textContent = counts.live;
     document.getElementById('count-test').textContent = counts.test;
     document.getElementById('count-bug').textContent = counts.bug;
     document.getElementById('count-wip').textContent = counts.wip;
     document.getElementById('count-todo').textContent = counts.todo;
-  }
+  };
 
-  async function saveTime(input) {
-    const row = input.closest('tr');
-    const nameEl = row.querySelector('.feature-name');
-    if (!nameEl) return;
-    const name = nameEl.textContent.trim();
-    
-    // Save locally immediately
-    const saved = JSON.parse(localStorage.getItem('feature-times') || '{}');
-    if (input.value) {
-      saved[name] = parseFloat(input.value);
-    } else {
-      delete saved[name];
-    }
-    localStorage.setItem('feature-times', JSON.stringify(saved));
-    updateTotalTime();
-
-    // Sync to Firestore
-    try {
-      await setDoc(estimatesDocRef, saved);
-      console.log('Successfully saved to Firestore');
-    } catch (e) {
-      console.error('Error saving to Firestore:', e);
-    }
-  }
-
-  function applyTimesToInputs(saved) {
-    document.querySelectorAll('tbody tr').forEach(row => {
-      const nameEl = row.querySelector('.feature-name');
-      if (!nameEl) return;
-      const name = nameEl.textContent.trim();
-      const input = row.querySelector('.time-input');
-      if (input) {
-        input.value = saved[name] !== undefined ? saved[name] : '';
-      }
-    });
-    updateTotalTime();
-  }
-
-  async function loadTimes() {
-    // 1. Load from localStorage first for snappy load
-    const localSaved = JSON.parse(localStorage.getItem('feature-times') || '{}');
-    applyTimesToInputs(localSaved);
-
-    // 2. Fetch from Firestore to sync latest cloud data
-    try {
-      const docSnap = await getDoc(estimatesDocRef);
-      if (docSnap.exists()) {
-        const cloudSaved = docSnap.data();
-        localStorage.setItem('feature-times', JSON.stringify(cloudSaved));
-        applyTimesToInputs(cloudSaved);
-      }
-    } catch (e) {
-      console.error('Error loading from Firestore:', e);
-    }
-  }
-
-  function updateTotalTime() {
+  window.updateTotalTime = function() {
     let total = 0;
     document.querySelectorAll('.time-input').forEach(input => {
       const val = parseFloat(input.value);
@@ -1683,18 +1602,234 @@
       }
     });
     document.getElementById('total-time').textContent = total + 'u';
+  };
+
+  async function saveStateToCloud() {
+    // Save to localStorage
+    localStorage.setItem('feature-dashboard-state', JSON.stringify(state));
+    
+    // Save to Firestore
+    try {
+      await setDoc(dataDocRef, state);
+      console.log('State successfully saved to Firestore');
+    } catch (e) {
+      console.error('Error saving state to Firestore:', e);
+    }
   }
 
-  // Bind to window for inline HTML onclick/oninput events
-  window.filterRows = filterRows;
-  window.updateCounts = updateCounts;
-  window.saveTime = saveTime;
-  window.loadTimes = loadTimes;
-  window.updateTotalTime = updateTotalTime;
+  window.updateFeatureText = function(element, moduleId, featureId, field) {
+    const module = state.modules.find(m => m.id === moduleId);
+    if (!module) return;
+    const feature = module.features.find(f => f.id === featureId);
+    if (!feature) return;
 
-  // Init
-  updateCounts();
-  loadTimes();
+    const newValue = element.textContent.trim();
+    if (feature[field] !== newValue) {
+      feature[field] = newValue;
+      saveStateToCloud();
+    }
+  };
+
+  window.updateFeatureSelect = function(select, moduleId, featureId, field) {
+    const module = state.modules.find(m => m.id === moduleId);
+    if (!module) return;
+    const feature = module.features.find(f => f.id === featureId);
+    if (!feature) return;
+
+    const newValue = select.value;
+    if (feature[field] !== newValue) {
+      feature[field] = newValue;
+      
+      // Update badge class dynamically to change colors immediately
+      select.className = `badge ${newValue}`;
+      
+      saveStateToCloud();
+      updateCounts();
+    }}
+  };
+
+  window.updateFeatureTime = function(input, moduleId, featureId) {
+    const module = state.modules.find(m => m.id === moduleId);
+    if (!module) return;
+    const feature = module.features.find(f => f.id === featureId);
+    if (!feature) return;
+
+    const val = parseFloat(input.value);
+    feature.time = !isNaN(val) && val >= 0 ? val : '';
+    
+    // Save locally
+    localStorage.setItem('feature-dashboard-state', JSON.stringify(state));
+    updateTotalTime();
+    
+    // Debounce cloud save
+    clearTimeout(window.saveTimeTimeout);
+    window.saveTimeTimeout = setTimeout(() => {
+      saveStateToCloud();
+    }, 1000);
+  };
+
+  window.addFeature = function(moduleId) {
+    const module = state.modules.find(m => m.id === moduleId);
+    if (!module) return;
+
+    const newId = 'f_' + Date.now();
+    const newFeature = {
+      id: newId,
+      name: 'Nieuwe feature',
+      status: 'todo',
+      priority: 'normal',
+      notes: 'Notities...',
+      time: ''
+    };
+
+    module.features.push(newFeature);
+    renderDashboard();
+    saveStateToCloud();
+  };
+
+  window.deleteFeature = function(moduleId, featureId) {
+    const module = state.modules.find(m => m.id === moduleId);
+    if (!module) return;
+
+    if (confirm('Weet je zeker dat je deze feature wilt verwijderen?')) {
+      module.features = module.features.filter(f => f.id !== featureId);
+      renderDashboard();
+      saveStateToCloud();
+    }
+  };
+
+  function renderDashboard() {
+    const container = document.getElementById('modules-container');
+    container.innerHTML = '';
+
+    const activeFilterBtn = document.querySelector('.filter-btn.active');
+    const currentFilter = activeFilterBtn ? activeFilterBtn.textContent.trim() : 'Alles';
+    
+    const filterMap = {
+      'Alles': 'all',
+      'Live': 'live',
+      'Moet getest': 'test',
+      'Bekende bugs': 'bug',
+      'In ontwikkeling': 'wip',
+      'Nog te bouwen': 'todo'
+    };
+    const statusFilter = filterMap[currentFilter] || 'all';
+
+    state.modules.forEach(module => {
+      const visibleFeatures = module.features.filter(f => statusFilter === 'all' || f.status === statusFilter);
+      
+      if (statusFilter !== 'all' && visibleFeatures.length === 0) {
+        return;
+      }
+
+      const section = document.createElement('div');
+      section.className = 'section';
+      section.dataset.moduleId = module.id;
+
+      let rowsHtml = '';
+      visibleFeatures.forEach(feature => {
+        rowsHtml += `
+          <tr data-status="${feature.status}">
+            <td class="feature-name" contenteditable="true" onblur="updateFeatureText(this, '${module.id}', '${feature.id}', 'name')" onkeydown="handleEnterKey(event)">
+              ${escapeHtml(feature.name)}
+            </td>
+            <td>
+              <select class="badge ${feature.status}" onchange="updateFeatureSelect(this, '${module.id}', '${feature.id}', 'status')">
+                <option value="live" ${feature.status === 'live' ? 'selected' : ''}>✓ Live</option>
+                <option value="test" ${feature.status === 'test' ? 'selected' : ''}>⏳ Moet getest</option>
+                <option value="bug" ${feature.status === 'bug' ? 'selected' : ''}>✗ Bekende bug</option>
+                <option value="wip" ${feature.status === 'wip' ? 'selected' : ''}>⚙ In ontwikkeling</option>
+                <option value="todo" ${feature.status === 'todo' ? 'selected' : ''}>○ Nog te bouwen</option>
+              </select>
+            </td>
+            <td class="prio-col">
+              <select class="badge ${feature.priority}" onchange="updateFeatureSelect(this, '${module.id}', '${feature.id}', 'priority')">
+                <option value="critical" ${feature.priority === 'critical' ? 'selected' : ''}>Kritiek</option>
+                <option value="high" ${feature.priority === 'high' ? 'selected' : ''}>Hoog</option>
+                <option value="normal" ${feature.priority === 'normal' ? 'selected' : ''}>Normaal</option>
+              </select>
+            </td>
+            <td class="notes" contenteditable="true" onblur="updateFeatureText(this, '${module.id}', '${feature.id}', 'notes')" onkeydown="handleEnterKey(event)">
+              ${escapeHtml(feature.notes)}
+            </td>
+            <td class="time-col">
+              <input type="number" class="time-input" min="0" step="0.5" placeholder="-" value="${feature.time || ''}" oninput="updateFeatureTime(this, '${module.id}', '${feature.id}')">
+            </td>
+            <td class="action-col">
+              <button class="delete-btn" onclick="deleteFeature('${module.id}', '${feature.id}')" title="Feature verwijderen">&times;</button>
+            </td>
+          </tr>
+        `;
+      });
+
+      section.innerHTML = `
+        <div class="section-header">
+          <span class="section-icon">${module.icon}</span>
+          <h2>${escapeHtml(module.title)}</h2>
+          <span class="section-count">${module.features.length} features</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Status</th>
+              <th>Prio</th>
+              <th>Notities</th>
+              <th style="width: 100px; text-align: right;">Tijd (uur)</th>
+              <th class="action-col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+            <tr class="add-row-placeholder">
+              <td colspan="6" style="text-align: center; padding: 12px;">
+                <button class="add-feature-btn" onclick="addFeature('${module.id}')">
+                  + Feature toevoegen
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+      container.appendChild(section);
+    });
+
+    updateCounts();
+    updateTotalTime();
+  }
+
+  async function loadState() {
+    // 1. Try loading from localStorage first
+    const localStateStr = localStorage.getItem('feature-dashboard-state');
+    if (localStateStr) {
+      state = JSON.parse(localStateStr);
+      renderDashboard();
+    }
+
+    // 2. Fetch from Firestore
+    try {
+      const docSnap = await getDoc(dataDocRef);
+      if (docSnap.exists()) {
+        state = docSnap.data();
+        localStorage.setItem('feature-dashboard-state', JSON.stringify(docSnap.data()));
+        renderDashboard();
+      } else {
+        console.log('No data in Firestore. Seeding database...');
+        state = { modules: SEED_DATA };
+        await saveStateToCloud();
+        renderDashboard();
+      }
+    } catch (e) {
+      console.error('Error loading state from Firestore:', e);
+      if (!localStateStr) {
+        state = { modules: SEED_DATA };
+        renderDashboard();
+      }
+    }
+  }
+
+  // Initialize
+  loadState();
 </script>
 
 </body>
