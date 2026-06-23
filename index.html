@@ -147,6 +147,7 @@
 
     .section {
       margin-bottom: 40px;
+      overflow-x: auto;
     }
 
     .section-header {
@@ -178,6 +179,7 @@
 
     table {
       width: 100%;
+      min-width: 980px;
       border-collapse: collapse;
       background: white;
       border-radius: 10px;
@@ -208,6 +210,58 @@
     td {
       padding: 11px 16px;
       vertical-align: top;
+    }
+
+    .drag-col {
+      width: 48px;
+      text-align: center;
+      vertical-align: middle !important;
+    }
+
+    .drag-handle {
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: #999;
+      cursor: grab;
+      font-size: 18px;
+      line-height: 1;
+      touch-action: none;
+      user-select: none;
+      transition: all 0.15s;
+    }
+
+    .drag-handle:hover {
+      color: #1a1a2e;
+      background: #f0f0f4;
+      border-color: #ddd;
+    }
+
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+
+    .drag-handle.disabled {
+      cursor: not-allowed;
+      opacity: 0.3;
+    }
+
+    tr.dragging {
+      opacity: 0.45;
+      background: #f0f2ff;
+    }
+
+    tr.drag-over-top td {
+      border-top: 2px solid #6366f1;
+    }
+
+    tr.drag-over-bottom td {
+      border-bottom: 2px solid #6366f1;
     }
 
     td.feature-name {
@@ -354,6 +408,34 @@
     .add-row-placeholder {
       background: #fafafa;
     }
+
+    .add-task-form {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.2fr) 150px 120px minmax(220px, 2fr) 92px auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .task-input,
+    .task-select {
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 7px 9px;
+      font: inherit;
+      font-size: 13px;
+      background: white;
+      color: #1a1a1a;
+      outline: none;
+      transition: all 0.15s;
+    }
+
+    .task-input:focus,
+    .task-select:focus {
+      border-color: #1a1a2e;
+      box-shadow: 0 0 0 2px rgba(26, 26, 46, 0.12);
+    }
+
     .add-feature-btn {
       background: #1a1a2e;
       color: white;
@@ -378,10 +460,22 @@
     }
 
     @media print {
-      .filter-bar, .filter-btn, .delete-btn, .add-feature-btn, .time-input { display: none; }
+      .filter-bar, .filter-btn, .delete-btn, .add-feature-btn, .add-row-placeholder, .drag-col, .time-input { display: none; }
       body { background: white; }
       header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       [contenteditable="true"] { border: none; background: transparent; padding: 0; }
+    }
+
+    @media (max-width: 900px) {
+      .add-task-form {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .add-task-form .task-input:first-child,
+      .add-task-form .task-input:nth-child(4),
+      .add-task-form .add-feature-btn {
+        grid-column: 1 / -1;
+      }
     }
   </style>
 </head>
@@ -1553,6 +1647,9 @@
 ];
 
   let state = { modules: [] };
+  let activeStatusFilter = 'all';
+  let draggedFeature = null;
+  let pointerDraggedFeature = null;
 
   function escapeHtml(str) {
     if (!str) return '';
@@ -1574,6 +1671,7 @@
   window.filterRows = function(status, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    activeStatusFilter = status;
     renderDashboard();
   };
 
@@ -1668,18 +1766,30 @@
     }, 1000);
   };
 
-  window.addFeature = function(moduleId) {
+  window.addFeature = function(event, moduleId) {
+    if (event) {
+      event.preventDefault();
+    }
+
     const module = state.modules.find(m => m.id === moduleId);
     if (!module) return;
 
-    const newId = 'f_' + Date.now();
+    const form = event ? event.target : null;
+    const formData = form ? new FormData(form) : null;
+    const name = formData ? formData.get('name').trim() : 'Nieuwe taak';
+
+    if (!name) {
+      return;
+    }
+
+    const newId = 'f_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
     const newFeature = {
       id: newId,
-      name: 'Nieuwe feature',
-      status: 'todo',
-      priority: 'normal',
-      notes: 'Notities...',
-      time: ''
+      name,
+      status: formData ? formData.get('status') : 'todo',
+      priority: formData ? formData.get('priority') : 'normal',
+      notes: formData ? formData.get('notes').trim() : '',
+      time: formData ? formData.get('time') : ''
     };
 
     module.features.push(newFeature);
@@ -1698,22 +1808,158 @@
     }
   };
 
+  function clearDragMarkers() {
+    document.querySelectorAll('tr.dragging, tr.drag-over-top, tr.drag-over-bottom').forEach(row => {
+      row.classList.remove('dragging', 'drag-over-top', 'drag-over-bottom');
+    });
+  }
+
+  function reorderFeature(moduleId, draggedFeatureId, targetFeatureId, dropBefore) {
+    const module = state.modules.find(m => m.id === moduleId);
+    if (!module) return false;
+
+    const fromIndex = module.features.findIndex(f => f.id === draggedFeatureId);
+    const targetIndex = module.features.findIndex(f => f.id === targetFeatureId);
+    if (fromIndex === -1 || targetIndex === -1 || fromIndex === targetIndex) {
+      return false;
+    }
+
+    const [movedFeature] = module.features.splice(fromIndex, 1);
+    let insertIndex = dropBefore ? targetIndex : targetIndex + 1;
+
+    if (fromIndex < insertIndex) {
+      insertIndex -= 1;
+    }
+
+    module.features.splice(insertIndex, 0, movedFeature);
+    return true;
+  }
+
+  window.handleFeaturePointerDown = function(event, moduleId, featureId) {
+    if (activeStatusFilter !== 'all') {
+      return;
+    }
+
+    pointerDraggedFeature = {
+      moduleId,
+      featureId,
+      startX: event.clientX,
+      startY: event.clientY,
+      targetFeatureId: null,
+      dropBefore: true,
+      dragging: false
+    };
+
+    event.preventDefault();
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    document.addEventListener('pointermove', handleFeaturePointerMove);
+    document.addEventListener('pointerup', handleFeaturePointerUp, { once: true });
+  };
+
+  function handleFeaturePointerMove(event) {
+    if (!pointerDraggedFeature) return;
+
+    const distance = Math.abs(event.clientX - pointerDraggedFeature.startX) + Math.abs(event.clientY - pointerDraggedFeature.startY);
+    if (!pointerDraggedFeature.dragging && distance < 6) {
+      return;
+    }
+
+    pointerDraggedFeature.dragging = true;
+    const sourceRow = document.querySelector(`tr[data-feature-id="${pointerDraggedFeature.featureId}"]`);
+    sourceRow?.classList.add('dragging');
+
+    const targetRow = document.elementFromPoint(event.clientX, event.clientY)?.closest('tr[data-feature-id]');
+    clearDragMarkers();
+    sourceRow?.classList.add('dragging');
+
+    if (!targetRow || targetRow.dataset.moduleId !== pointerDraggedFeature.moduleId || targetRow.dataset.featureId === pointerDraggedFeature.featureId) {
+      pointerDraggedFeature.targetFeatureId = null;
+      return;
+    }
+
+    const rect = targetRow.getBoundingClientRect();
+    const dropBefore = event.clientY < rect.top + rect.height / 2;
+    targetRow.classList.toggle('drag-over-top', dropBefore);
+    targetRow.classList.toggle('drag-over-bottom', !dropBefore);
+    pointerDraggedFeature.targetFeatureId = targetRow.dataset.featureId;
+    pointerDraggedFeature.dropBefore = dropBefore;
+  }
+
+  function handleFeaturePointerUp() {
+    if (!pointerDraggedFeature) return;
+
+    const changed = pointerDraggedFeature.dragging && pointerDraggedFeature.targetFeatureId
+      ? reorderFeature(pointerDraggedFeature.moduleId, pointerDraggedFeature.featureId, pointerDraggedFeature.targetFeatureId, pointerDraggedFeature.dropBefore)
+      : false;
+
+    pointerDraggedFeature = null;
+    document.removeEventListener('pointermove', handleFeaturePointerMove);
+    clearDragMarkers();
+
+    if (changed) {
+      renderDashboard();
+      saveStateToCloud();
+    }
+  }
+
+  window.handleFeatureDragStart = function(event, moduleId, featureId) {
+    if (activeStatusFilter !== 'all') {
+      event.preventDefault();
+      return;
+    }
+
+    draggedFeature = { moduleId, featureId };
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', featureId);
+    event.currentTarget.closest('tr').classList.add('dragging');
+  };
+
+  window.handleFeatureDragOver = function(event, moduleId, featureId) {
+    if (!draggedFeature || draggedFeature.moduleId !== moduleId || draggedFeature.featureId === featureId) {
+      return;
+    }
+
+    event.preventDefault();
+    const row = event.currentTarget;
+    const rect = row.getBoundingClientRect();
+    const dropBefore = event.clientY < rect.top + rect.height / 2;
+
+    row.classList.toggle('drag-over-top', dropBefore);
+    row.classList.toggle('drag-over-bottom', !dropBefore);
+  };
+
+  window.handleFeatureDragLeave = function(event) {
+    event.currentTarget.classList.remove('drag-over-top', 'drag-over-bottom');
+  };
+
+  window.handleFeatureDrop = function(event, moduleId, targetFeatureId) {
+    if (!draggedFeature || draggedFeature.moduleId !== moduleId) {
+      return;
+    }
+
+    event.preventDefault();
+    const row = event.currentTarget;
+    const rect = row.getBoundingClientRect();
+    const dropBefore = event.clientY < rect.top + rect.height / 2;
+    const changed = reorderFeature(moduleId, draggedFeature.featureId, targetFeatureId, dropBefore);
+    draggedFeature = null;
+
+    if (changed) {
+      renderDashboard();
+      saveStateToCloud();
+    }
+  };
+
+  window.handleFeatureDragEnd = function() {
+    draggedFeature = null;
+    clearDragMarkers();
+  };
+
   function renderDashboard() {
     const container = document.getElementById('modules-container');
     container.innerHTML = '';
-
-    const activeFilterBtn = document.querySelector('.filter-btn.active');
-    const currentFilter = activeFilterBtn ? activeFilterBtn.textContent.trim() : 'Alles';
-    
-    const filterMap = {
-      'Alles': 'all',
-      'Live': 'live',
-      'Moet getest': 'test',
-      'Bekende bugs': 'bug',
-      'In ontwikkeling': 'wip',
-      'Nog te bouwen': 'todo'
-    };
-    const statusFilter = filterMap[currentFilter] || 'all';
+    const statusFilter = activeStatusFilter;
+    const dragDisabled = statusFilter !== 'all';
 
     state.modules.forEach(module => {
       const visibleFeatures = module.features.filter(f => statusFilter === 'all' || f.status === statusFilter);
@@ -1729,7 +1975,10 @@
       let rowsHtml = '';
       visibleFeatures.forEach(feature => {
         rowsHtml += `
-          <tr data-status="${feature.status}">
+          <tr data-status="${feature.status}" data-module-id="${module.id}" data-feature-id="${feature.id}" ondragover="handleFeatureDragOver(event, '${module.id}', '${feature.id}')" ondragleave="handleFeatureDragLeave(event)" ondrop="handleFeatureDrop(event, '${module.id}', '${feature.id}')">
+            <td class="drag-col">
+              <button class="drag-handle ${dragDisabled ? 'disabled' : ''}" draggable="${dragDisabled ? 'false' : 'true'}" onpointerdown="handleFeaturePointerDown(event, '${module.id}', '${feature.id}')" ondragstart="handleFeatureDragStart(event, '${module.id}', '${feature.id}')" ondragend="handleFeatureDragEnd(event)" title="${dragDisabled ? 'Zet filter op Alles om te verslepen' : 'Versleep om volgorde te wijzigen'}" aria-label="Volgorde wijzigen">≡</button>
+            </td>
             <td class="feature-name" contenteditable="true" onblur="updateFeatureText(this, '${module.id}', '${feature.id}', 'name')" onkeydown="handleEnterKey(event)">
               ${escapeHtml(feature.name)}
             </td>
@@ -1771,6 +2020,7 @@
         <table>
           <thead>
             <tr>
+              <th class="drag-col"></th>
               <th>Feature</th>
               <th>Status</th>
               <th>Prio</th>
@@ -1782,10 +2032,25 @@
           <tbody>
             ${rowsHtml}
             <tr class="add-row-placeholder">
-              <td colspan="6" style="text-align: center; padding: 12px;">
-                <button class="add-feature-btn" onclick="addFeature('${module.id}')">
-                  + Feature toevoegen
-                </button>
+              <td colspan="7" style="padding: 12px;">
+                <form class="add-task-form" onsubmit="addFeature(event, '${module.id}')">
+                  <input class="task-input" name="name" type="text" placeholder="Nieuwe taak" required>
+                  <select class="task-select" name="status" aria-label="Status">
+                    <option value="todo">Nog te bouwen</option>
+                    <option value="wip">In ontwikkeling</option>
+                    <option value="test">Moet getest</option>
+                    <option value="bug">Bekende bug</option>
+                    <option value="live">Live</option>
+                  </select>
+                  <select class="task-select" name="priority" aria-label="Prioriteit">
+                    <option value="normal">Normaal</option>
+                    <option value="high">Hoog</option>
+                    <option value="critical">Kritiek</option>
+                  </select>
+                  <input class="task-input" name="notes" type="text" placeholder="Notities">
+                  <input class="task-input" name="time" type="number" min="0" step="0.5" placeholder="Uren">
+                  <button class="add-feature-btn" type="submit">+ Taak toevoegen</button>
+                </form>
               </td>
             </tr>
           </tbody>
