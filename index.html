@@ -477,6 +477,353 @@
         grid-column: 1 / -1;
       }
     }
+
+    /* AI Assistant CSS */
+    .ai-chat-launcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .ai-chat-launcher:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .ai-chat-launcher:active {
+      transform: scale(0.95);
+    }
+
+    .ai-chat-launcher svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    .ai-chat-launcher::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.3;
+      z-index: -1;
+      animation: launcher-pulse 2s infinite;
+    }
+
+    @keyframes launcher-pulse {
+      0% {
+        transform: scale(1);
+        opacity: 0.35;
+      }
+      70% {
+        transform: scale(1.4);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    .ai-chat-window {
+      position: fixed;
+      bottom: 96px;
+      right: 24px;
+      width: 380px;
+      height: 550px;
+      max-width: calc(100vw - 48px);
+      max-height: calc(100vh - 140px);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      z-index: 10000;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .ai-chat-window.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .ai-chat-header {
+      background: #1a1a2e;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .ai-chat-header-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-chat-avatar {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .ai-chat-title-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-chat-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .ai-chat-status {
+      font-size: 10px;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ai-chat-status-dot {
+      width: 6px;
+      height: 6px;
+      background-color: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .ai-chat-close {
+      background: none;
+      border: none;
+      color: white;
+      opacity: 0.6;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s;
+    }
+
+    .ai-chat-close:hover {
+      opacity: 1;
+    }
+
+    .ai-chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .ai-chat-bubble {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      line-height: 1.45;
+      word-break: break-word;
+      animation: bubble-appear 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes bubble-appear {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .ai-chat-bubble.assistant {
+      align-self: flex-start;
+      background: #f0f0f4;
+      color: #1a1a1a;
+      border-bottom-left-radius: 4px;
+    }
+
+    .ai-chat-bubble.user {
+      align-self: flex-end;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      border-bottom-right-radius: 4px;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+    }
+
+    .ai-chat-bubble.error {
+      align-self: flex-start;
+      background: #ffeaea;
+      color: #b30000;
+      border: 1px solid #f5b3b3;
+      border-bottom-left-radius: 4px;
+    }
+
+    .ai-chat-bubble strong {
+      font-weight: 600;
+    }
+
+    .ai-chat-bubble code {
+      font-family: monospace;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .ai-chat-bubble.user code {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .ai-chat-bubble ul, .ai-chat-bubble ol {
+      margin-left: 16px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .ai-chat-bubble li {
+      margin-bottom: 4px;
+    }
+
+    .ai-chat-typing {
+      align-self: flex-start;
+      background: #f0f0f4;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border-bottom-left-radius: 4px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      width: 48px;
+      justify-content: center;
+    }
+
+    .ai-chat-typing-dot {
+      width: 6px;
+      height: 6px;
+      background: #888;
+      border-radius: 50%;
+      animation: typing-bounce 1.4s infinite ease-in-out both;
+    }
+
+    .ai-chat-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .ai-chat-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes typing-bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
+    }
+
+    .ai-chat-input-area {
+      padding: 12px 16px;
+      background: white;
+      border-top: 1px solid #ebebeb;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .ai-chat-input-form {
+      display: flex;
+      width: 100%;
+      gap: 8px;
+    }
+
+    .ai-chat-input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 13px;
+      outline: none;
+      transition: all 0.15s;
+      background: #fafafa;
+    }
+
+    .ai-chat-input:focus {
+      border-color: #6366f1;
+      background: white;
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+    }
+
+    .ai-chat-send {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #6366f1;
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .ai-chat-send:hover {
+      background: #4f46e5;
+      transform: scale(1.05);
+    }
+
+    .ai-chat-send:active {
+      transform: scale(0.95);
+    }
+
+    .ai-chat-send svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 480px) {
+      .ai-chat-window {
+        bottom: 0;
+        right: 0;
+        width: 100vw;
+        height: 100vh;
+        max-width: 100vw;
+        max-height: 100vh;
+        border-radius: 0;
+        border: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2093,9 +2440,252 @@
     }
   }
 
+  // AI Chat Assistant Integration
+  let chatInitialized = false;
+
+  function getChatSessionId() {
+    let sessId = sessionStorage.getItem('ai-chat-session-id');
+    if (!sessId) {
+      sessId = 'arc-chat-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now();
+      sessionStorage.setItem('ai-chat-session-id', sessId);
+    }
+    return sessId;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function formatMessageText(text) {
+    let html = escapeHtml(text);
+    
+    // Bold: **text**
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Italic: *text*
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Inline code: `code`
+    html = html.replace(/`(.*?)`/g, '<code>$1</code>');
+    
+    // Lists: Lines starting with "- " or "* "
+    const lines = html.split('\n');
+    let inList = false;
+    let formattedLines = [];
+    
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+        if (!inList) {
+          formattedLines.push('<ul>');
+          inList = true;
+        }
+        formattedLines.push(`<li>${trimmed.substring(2)}</li>`);
+      } else {
+        if (inList) {
+          formattedLines.push('</ul>');
+          inList = false;
+        }
+        formattedLines.push(line);
+      }
+    });
+    
+    if (inList) {
+      formattedLines.push('</ul>');
+    }
+    
+    return formattedLines.join('<br>').replace(/<\/ul><br>/g, '</ul>').replace(/<br><ul>/g, '<ul>');
+  }
+
+  window.toggleAiChat = function() {
+    const chatWindow = document.getElementById('ai-chat-window');
+    chatWindow.classList.toggle('show');
+    
+    if (chatWindow.classList.contains('show')) {
+      document.getElementById('ai-chat-input').focus();
+      if (!chatInitialized) {
+        initializeChat();
+      }
+    }
+  };
+
+  function appendChatBubble(text, sender) {
+    const container = document.getElementById('ai-chat-messages');
+    const bubble = document.createElement('div');
+    bubble.className = `ai-chat-bubble ${sender}`;
+    
+    if (sender === 'assistant') {
+      bubble.innerHTML = formatMessageText(text);
+    } else if (sender === 'error') {
+      bubble.innerHTML = `⚠️ <strong>Fout:</strong> ${escapeHtml(text)}`;
+    } else {
+      bubble.textContent = text;
+    }
+    
+    container.appendChild(bubble);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function showTypingIndicator() {
+    const container = document.getElementById('ai-chat-messages');
+    const indicator = document.createElement('div');
+    indicator.className = 'ai-chat-typing';
+    indicator.id = 'ai-chat-typing-indicator';
+    indicator.innerHTML = `
+      <span class="ai-chat-typing-dot"></span>
+      <span class="ai-chat-typing-dot"></span>
+      <span class="ai-chat-typing-dot"></span>
+    `;
+    container.appendChild(indicator);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function removeTypingIndicator() {
+    const indicator = document.getElementById('ai-chat-typing-indicator');
+    if (indicator) {
+      indicator.remove();
+    }
+  }
+
+  function initializeChat() {
+    chatInitialized = true;
+    appendChatBubble("Hoi! Ik ben de ARC AI Assistent. Heb je vragen over de status van de features, de bugs of de planning in dit project? Stel ze gerust!", "assistant");
+  }
+
+  window.sendAiMessage = async function(event) {
+    if (event) event.preventDefault();
+    
+    const input = document.getElementById('ai-chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    
+    // Clear input
+    input.value = '';
+    
+    // Add user message
+    appendChatBubble(text, 'user');
+    
+    // Show typing
+    showTypingIndicator();
+    
+    try {
+      const stats = {
+        live: parseInt(document.getElementById('count-live')?.textContent || '0'),
+        test: parseInt(document.getElementById('count-test')?.textContent || '0'),
+        bug: parseInt(document.getElementById('count-bug')?.textContent || '0'),
+        wip: parseInt(document.getElementById('count-wip')?.textContent || '0'),
+        todo: parseInt(document.getElementById('count-todo')?.textContent || '0'),
+        totalTime: document.getElementById('total-time')?.textContent || '0u'
+      };
+      
+      const payload = {
+        message: text,
+        chatInput: text,
+        question: text,
+        sessionId: getChatSessionId(),
+        stats: stats,
+        dashboardData: state
+      };
+      
+      const response = await fetch('https://ceesodd.app.n8n.cloud/webhook/e14414f0-2dcb-4261-9b72-921060aeca94', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+      
+      removeTypingIndicator();
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          appendChatBubble("De n8n-webhook is momenteel niet actief of het scenario staat uit. Controleer of de workflow geactiveerd is in n8n.", "error");
+        } else {
+          appendChatBubble(`De webhook reageerde met status ${response.status}. Probeer het later opnieuw.`, "error");
+        }
+        return;
+      }
+      
+      // Parse response
+      let responseText = '';
+      const contentType = response.headers.get('content-type') || '';
+      
+      if (contentType.includes('application/json')) {
+        const json = await response.json();
+        
+        // Find text content in JSON response
+        if (typeof json === 'string') {
+          responseText = json;
+        } else if (Array.isArray(json) && json.length > 0) {
+          const first = json[0];
+          responseText = typeof first === 'string' ? first : (first.output || first.response || first.text || first.message || JSON.stringify(first));
+        } else {
+          responseText = json.output || json.response || json.text || json.message || json.result || json.chatOutput || JSON.stringify(json);
+        }
+      } else {
+        responseText = await response.text();
+      }
+      
+      if (!responseText) {
+        responseText = "Ik heb geen antwoord ontvangen van de assistent. Controleer het n8n-scenario.";
+      }
+      
+      appendChatBubble(responseText, 'assistant');
+      
+    } catch (error) {
+      removeTypingIndicator();
+      console.error('Error communicating with n8n chatbot:', error);
+      appendChatBubble("Er is een netwerkfout opgetreden bij het verbinden met de AI-assistent. Controleer of je n8n-server en webhook actief zijn.", "error");
+    }
+  };
+
   // Initialize
   loadState();
 </script>
+
+<!-- AI Assistant Widget -->
+<button class="ai-chat-launcher" id="ai-chat-launcher" onclick="toggleAiChat()" aria-label="Open AI Assistent">
+  <svg viewBox="0 0 24 24">
+    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+    <circle cx="9" cy="9" r="1.5"/>
+    <circle cx="15" cy="9" r="1.5"/>
+    <path d="M8 12.5c1.5 1.5 4.5 1.5 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+  </svg>
+</button>
+
+<div class="ai-chat-window" id="ai-chat-window">
+  <div class="ai-chat-header">
+    <div class="ai-chat-header-info">
+      <div class="ai-chat-avatar">🤖</div>
+      <div class="ai-chat-title-container">
+        <span class="ai-chat-title">ARC AI Assistent</span>
+        <span class="ai-chat-status"><span class="ai-chat-status-dot"></span>Online</span>
+      </div>
+    </div>
+    <button class="ai-chat-close" onclick="toggleAiChat()" aria-label="Sluit chat">&times;</button>
+  </div>
+  
+  <div class="ai-chat-messages" id="ai-chat-messages">
+    <!-- Initial welcome message will be inserted by JS -->
+  </div>
+  
+  <div class="ai-chat-input-area">
+    <form class="ai-chat-input-form" id="ai-chat-input-form" onsubmit="sendAiMessage(event)">
+      <input type="text" class="ai-chat-input" id="ai-chat-input" placeholder="Vraag iets over de features..." autocomplete="off" required>
+      <button type="submit" class="ai-chat-send" aria-label="Verstuur bericht">
+        <svg viewBox="0 0 24 24">
+          <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
 
 </body>
 </html>

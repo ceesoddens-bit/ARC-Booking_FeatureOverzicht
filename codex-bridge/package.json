@@ -1,0 +1,13 @@
+{
+  "name": "codex-n8n-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Small HTTP bridge that lets n8n trigger Codex CLI jobs per project.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

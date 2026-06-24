@@ -1,0 +1,18 @@
+{
+  "arc-booking": {
+    "cwd": "/srv/projects/ARC-Booking_FeatureOverzicht",
+    "model": "gpt-5",
+    "reasoningEffort": "medium",
+    "sandbox": "workspace-write",
+    "branchPrefix": "codex/n8n-",
+    "allowCommit": true
+  },
+  "another-project": {
+    "cwd": "/srv/projects/another-project",
+    "model": "gpt-5",
+    "reasoningEffort": "medium",
+    "sandbox": "workspace-write",
+    "branchPrefix": "codex/n8n-",
+    "allowCommit": true
+  }
+}
