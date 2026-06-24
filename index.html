@@ -2444,12 +2444,17 @@
   let chatInitialized = false;
 
   function getChatSessionId() {
-    let sessId = sessionStorage.getItem('ai-chat-session-id');
-    if (!sessId) {
-      sessId = 'arc-chat-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now();
-      sessionStorage.setItem('ai-chat-session-id', sessId);
+    try {
+      let sessId = sessionStorage.getItem('ai-chat-session-id');
+      if (!sessId) {
+        sessId = 'arc-chat-' + Math.random().toString(36).substring(2, 15) + '-' + Date.now();
+        sessionStorage.setItem('ai-chat-session-id', sessId);
+      }
+      return sessId;
+    } catch (e) {
+      // Fallback for Safari private browsing / cookie restrictions
+      return 'arc-chat-fallback-' + Date.now() + '-' + Math.random().toString(36).substring(2, 10);
     }
-    return sessId;
   }
 
 
@@ -2636,12 +2641,17 @@
     }
   };
 
+  // Register event listeners dynamically for Safari ES module compatibility
+  document.getElementById('ai-chat-launcher')?.addEventListener('click', window.toggleAiChat);
+  document.querySelector('.ai-chat-close')?.addEventListener('click', window.toggleAiChat);
+  document.getElementById('ai-chat-input-form')?.addEventListener('submit', window.sendAiMessage);
+
   // Initialize
   loadState();
 </script>
 
 <!-- AI Assistant Widget -->
-<button class="ai-chat-launcher" id="ai-chat-launcher" onclick="toggleAiChat()" aria-label="Open AI Assistent">
+<button class="ai-chat-launcher" id="ai-chat-launcher" aria-label="Open AI Assistent">
   <svg viewBox="0 0 24 24">
     <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
     <circle cx="9" cy="9" r="1.5"/>
@@ -2659,7 +2669,7 @@
         <span class="ai-chat-status"><span class="ai-chat-status-dot"></span>Online</span>
       </div>
     </div>
-    <button class="ai-chat-close" onclick="toggleAiChat()" aria-label="Sluit chat">&times;</button>
+    <button class="ai-chat-close" aria-label="Sluit chat">&times;</button>
   </div>
   
   <div class="ai-chat-messages" id="ai-chat-messages">
@@ -2667,7 +2677,7 @@
   </div>
   
   <div class="ai-chat-input-area">
-    <form class="ai-chat-input-form" id="ai-chat-input-form" onsubmit="sendAiMessage(event)">
+    <form class="ai-chat-input-form" id="ai-chat-input-form">
       <input type="text" class="ai-chat-input" id="ai-chat-input" placeholder="Vraag iets over de features..." autocomplete="off" required>
       <button type="submit" class="ai-chat-send" aria-label="Verstuur bericht">
         <svg viewBox="0 0 24 24">
