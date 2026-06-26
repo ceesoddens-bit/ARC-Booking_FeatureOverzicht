@@ -2074,7 +2074,10 @@
         total += val;
       }
     });
-    document.getElementById('total-time').textContent = total + 'u';
+    
+    // Afronden op max 2 decimalen om floating-point errors (bijv. 1.5999999999) te voorkomen
+    const roundedTotal = Number(total.toFixed(2));
+    document.getElementById('total-time').textContent = roundedTotal + 'u';
   };
 
   async function saveStateToCloud() {
