@@ -81,6 +81,10 @@
     .badge.critical  { background: #ffeaea; color: #b30000; border: 1px solid #f5b3b3; }
     .badge.high      { background: #fff4e0; color: #8a5a00; border: 1px solid #ffd080; }
     .badge.normal    { background: #f0f0f0; color: #555; border: 1px solid #d0d0d0; }
+    .badge.Amber     { background: #fdf4ff; color: #a21caf; border: 1px solid #f0abfc; }
+    .badge.Revie     { background: #f0fdfa; color: #0f766e; border: 1px solid #5eead4; }
+    .badge.Cees      { background: #eff6ff; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .badge.unassigned { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
 
     select.badge {
       appearance: none;
@@ -2099,7 +2103,7 @@
       feature[field] = newValue;
       
       // Update badge class dynamically to change colors immediately
-      select.className = `badge ${newValue}`;
+      select.className = `badge ${newValue || 'unassigned'}`;
       
       saveStateToCloud();
       updateCounts();
@@ -2343,8 +2347,13 @@
             <td class="feature-name" contenteditable="true" onblur="updateFeatureText(this, '${module.id}', '${feature.id}', 'name')" onkeydown="handleEnterKey(event)">
               ${escapeHtml(feature.name)}
             </td>
-            <td class="assignee" contenteditable="true" data-placeholder="-" onblur="updateFeatureText(this, '${module.id}', '${feature.id}', 'assignee')" onkeydown="handleEnterKey(event)">
-              ${escapeHtml(feature.assignee || '')}
+            <td class="assignee">
+              <select class="badge ${feature.assignee || 'unassigned'}" onchange="updateFeatureSelect(this, '${module.id}', '${feature.id}', 'assignee')">
+                <option value="" ${!feature.assignee ? 'selected' : ''}>-</option>
+                <option value="Amber" ${feature.assignee === 'Amber' ? 'selected' : ''}>Amber</option>
+                <option value="Revie" ${feature.assignee === 'Revie' ? 'selected' : ''}>Revie</option>
+                <option value="Cees" ${feature.assignee === 'Cees' ? 'selected' : ''}>Cees</option>
+              </select>
             </td>
             <td>
               <select class="badge ${feature.status}" onchange="updateFeatureSelect(this, '${module.id}', '${feature.id}', 'status')">
@@ -2400,7 +2409,12 @@
               <td colspan="8" style="padding: 12px;">
                 <form class="add-task-form" onsubmit="addFeature(event, '${module.id}')">
                   <input class="task-input" name="name" type="text" placeholder="Nieuwe taak" required>
-                  <input class="task-input" name="assignee" type="text" placeholder="Naam (optioneel)">
+                  <select class="task-select" name="assignee" aria-label="Toegewezen aan">
+                    <option value="">Geen naam</option>
+                    <option value="Amber">Amber</option>
+                    <option value="Revie">Revie</option>
+                    <option value="Cees">Cees</option>
+                  </select>
                   <select class="task-select" name="status" aria-label="Status">
                     <option value="todo">Nog te bouwen</option>
                     <option value="wip">In ontwikkeling</option>
