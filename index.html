@@ -113,6 +113,13 @@
       box-shadow: 0 0 0 2px rgba(26, 26, 46, 0.05);
     }
 
+    [contenteditable="true"]:empty:before {
+      content: attr(data-placeholder);
+      color: #aaa;
+      pointer-events: none;
+      display: block;
+    }
+
     .filter-bar {
       background: white;
       border-bottom: 1px solid #e5e5e5;
@@ -270,6 +277,12 @@
       min-width: 200px;
     }
 
+    td.assignee {
+      color: #333;
+      font-size: 13px;
+      min-width: 120px;
+    }
+
     td.notes {
       color: #555;
       font-size: 13px;
@@ -411,7 +424,7 @@
 
     .add-task-form {
       display: grid;
-      grid-template-columns: minmax(180px, 1.2fr) 150px 120px minmax(220px, 2fr) 92px auto;
+      grid-template-columns: minmax(160px, 1.2fr) 120px 130px 110px minmax(180px, 2fr) 92px auto;
       gap: 8px;
       align-items: center;
     }
@@ -472,7 +485,7 @@
       }
 
       .add-task-form .task-input:first-child,
-      .add-task-form .task-input:nth-child(4),
+      .add-task-form .task-input:nth-child(5),
       .add-task-form .add-feature-btn {
         grid-column: 1 / -1;
       }
@@ -2133,6 +2146,7 @@
     const newFeature = {
       id: newId,
       name,
+      assignee: formData ? formData.get('assignee').trim() : '',
       status: formData ? formData.get('status') : 'todo',
       priority: formData ? formData.get('priority') : 'normal',
       notes: formData ? formData.get('notes').trim() : '',
@@ -2329,6 +2343,9 @@
             <td class="feature-name" contenteditable="true" onblur="updateFeatureText(this, '${module.id}', '${feature.id}', 'name')" onkeydown="handleEnterKey(event)">
               ${escapeHtml(feature.name)}
             </td>
+            <td class="assignee" contenteditable="true" data-placeholder="-" onblur="updateFeatureText(this, '${module.id}', '${feature.id}', 'assignee')" onkeydown="handleEnterKey(event)">
+              ${escapeHtml(feature.assignee || '')}
+            </td>
             <td>
               <select class="badge ${feature.status}" onchange="updateFeatureSelect(this, '${module.id}', '${feature.id}', 'status')">
                 <option value="live" ${feature.status === 'live' ? 'selected' : ''}>✓ Live</option>
@@ -2369,6 +2386,7 @@
             <tr>
               <th class="drag-col"></th>
               <th>Feature</th>
+              <th>Naam / Assignee</th>
               <th>Status</th>
               <th>Prio</th>
               <th>Notities</th>
@@ -2379,9 +2397,10 @@
           <tbody>
             ${rowsHtml}
             <tr class="add-row-placeholder">
-              <td colspan="7" style="padding: 12px;">
+              <td colspan="8" style="padding: 12px;">
                 <form class="add-task-form" onsubmit="addFeature(event, '${module.id}')">
                   <input class="task-input" name="name" type="text" placeholder="Nieuwe taak" required>
+                  <input class="task-input" name="assignee" type="text" placeholder="Naam (optioneel)">
                   <select class="task-select" name="status" aria-label="Status">
                     <option value="todo">Nog te bouwen</option>
                     <option value="wip">In ontwikkeling</option>
