@@ -75,6 +75,7 @@
 
     .badge.live      { background: #e6f9ee; color: #1a7a3c; border: 1px solid #b2e8c9; }
     .badge.test      { background: #fff4e0; color: #8a5a00; border: 1px solid #ffd080; }
+    .badge.test-fail { background: #fff1e5; color: #d95a00; border: 1px solid #ffb880; }
     .badge.bug       { background: #ffeaea; color: #b30000; border: 1px solid #f5b3b3; }
     .badge.wip       { background: #e8eeff; color: #2c45a0; border: 1px solid #b0bfff; }
     .badge.todo      { background: #f0f0f0; color: #555; border: 1px solid #d0d0d0; }
@@ -322,6 +323,7 @@
 
     .dot.live    { background: #1a7a3c; }
     .dot.test    { background: #e09000; }
+    .dot.test-fail { background: #d95a00; }
     .dot.bug     { background: #cc0000; }
     .dot.wip     { background: #2c45a0; }
     .dot.todo    { background: #aaa; }
@@ -345,6 +347,7 @@
 
     .stat-card.live-card  { border-top-color: #1a7a3c; }
     .stat-card.test-card  { border-top-color: #e09000; }
+    .stat-card.test-fail-card { border-top-color: #d95a00; }
     .stat-card.bug-card   { border-top-color: #cc0000; }
     .stat-card.wip-card   { border-top-color: #2c45a0; }
     .stat-card.todo-card  { border-top-color: #aaa; }
@@ -363,6 +366,7 @@
 
     .stat-card.live-card .stat-num  { color: #1a7a3c; }
     .stat-card.test-card .stat-num  { color: #e09000; }
+    .stat-card.test-fail-card .stat-num { color: #d95a00; }
     .stat-card.bug-card .stat-num   { color: #cc0000; }
     .stat-card.wip-card .stat-num   { color: #2c45a0; }
     .stat-card.todo-card .stat-num  { color: #888; }
@@ -860,6 +864,7 @@
   <span class="legend-title">Status:</span>
   <span class="badge live">✓ Live</span>
   <span class="badge test">⏳ Moet getest</span>
+  <span class="badge test-fail">⚠️ Test fail</span>
   <span class="badge bug">✗ Bekende bug</span>
   <span class="badge wip">⚙ In ontwikkeling</span>
   <span class="badge todo">○ Nog te bouwen</span>
@@ -870,6 +875,7 @@
   <button class="filter-btn active" onclick="filterRows('all', this)">Alles</button>
   <button class="filter-btn" onclick="filterRows('live', this)">Live</button>
   <button class="filter-btn" onclick="filterRows('test', this)">Moet getest</button>
+  <button class="filter-btn" onclick="filterRows('test-fail', this)">Test fail</button>
   <button class="filter-btn" onclick="filterRows('bug', this)">Bekende bugs</button>
   <button class="filter-btn" onclick="filterRows('wip', this)">In ontwikkeling</button>
   <button class="filter-btn" onclick="filterRows('todo', this)">Nog te bouwen</button>
@@ -886,6 +892,10 @@
     <div class="stat-card test-card">
       <div class="stat-num" id="count-test">0</div>
       <div class="stat-label">Moet getest worden</div>
+    </div>
+    <div class="stat-card test-fail-card">
+      <div class="stat-num" id="count-test-fail">0</div>
+      <div class="stat-label">Test fail</div>
     </div>
     <div class="stat-card bug-card">
       <div class="stat-num" id="count-bug">0</div>
@@ -2040,7 +2050,7 @@
   };
 
   window.updateCounts = function() {
-    const counts = { live: 0, test: 0, bug: 0, wip: 0, todo: 0 };
+    const counts = { live: 0, test: 0, 'test-fail': 0, bug: 0, wip: 0, todo: 0 };
     state.modules.forEach(module => {
       module.features.forEach(f => {
         if (counts[f.status] !== undefined) {
@@ -2050,6 +2060,7 @@
     });
     document.getElementById('count-live').textContent = counts.live;
     document.getElementById('count-test').textContent = counts.test;
+    document.getElementById('count-test-fail').textContent = counts['test-fail'];
     document.getElementById('count-bug').textContent = counts.bug;
     document.getElementById('count-wip').textContent = counts.wip;
     document.getElementById('count-todo').textContent = counts.todo;
@@ -2359,6 +2370,7 @@
               <select class="badge ${feature.status}" onchange="updateFeatureSelect(this, '${module.id}', '${feature.id}', 'status')">
                 <option value="live" ${feature.status === 'live' ? 'selected' : ''}>✓ Live</option>
                 <option value="test" ${feature.status === 'test' ? 'selected' : ''}>⏳ Moet getest</option>
+                <option value="test-fail" ${feature.status === 'test-fail' ? 'selected' : ''}>⚠️ Test fail</option>
                 <option value="bug" ${feature.status === 'bug' ? 'selected' : ''}>✗ Bekende bug</option>
                 <option value="wip" ${feature.status === 'wip' ? 'selected' : ''}>⚙ In ontwikkeling</option>
                 <option value="todo" ${feature.status === 'todo' ? 'selected' : ''}>○ Nog te bouwen</option>
@@ -2419,6 +2431,7 @@
                     <option value="todo">Nog te bouwen</option>
                     <option value="wip">In ontwikkeling</option>
                     <option value="test">Moet getest</option>
+                    <option value="test-fail">Test fail</option>
                     <option value="bug">Bekende bug</option>
                     <option value="live">Live</option>
                   </select>
